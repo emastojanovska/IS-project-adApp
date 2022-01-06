@@ -1,0 +1,12 @@
+﻿@model Listing.Domain.DTO.AddToWishlistDto
+
+@{
+    ViewData["Title"] = "Add To Wishlist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form asp-action="AddListingToWishlist" method="post">
+    <input type="hidden" asp-for="ListingId"/>
+    <label asp-for="SelectedListing.Title"/>
+    <input disabled/>
+</form>
