@@ -15,5 +15,6 @@ namespace Listing.Service.Interface
         AddToWishlistDto GetWishlistInfo(Guid? id);
         void DeleteListing(Guid id);
         bool AddToWishlist(AddToWishlistDto item, string userID);
+        List<ListingPost> GetAllByLocationAndCategory(string location, string category);
     }
 }

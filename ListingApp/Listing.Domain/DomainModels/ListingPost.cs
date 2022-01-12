@@ -13,10 +13,16 @@ namespace Listing.Domain.DomainModels
         public int Discount { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
-        public Guid CategoryId { get; set; }
-        public Category Category { get; set; }
-        public virtual ICollection<ListingsInWishlist> UsersInterest { get; set; }
 
+        public Guid CategoryId { get; set; }
+        public virtual Category Category { get; set; }
+
+        public Guid LocationId { get; set; }
+        public virtual Location Location { get; set; }
+
+        public virtual ICollection<ListingsInWishlist> ListingsInWishlists { get; set; }
+
+        public virtual ICollection<Image> ListingImages { get; set; }
 
     }
 }

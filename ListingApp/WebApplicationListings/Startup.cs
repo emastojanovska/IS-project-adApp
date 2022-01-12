@@ -40,10 +40,13 @@ namespace WebApplicationListings
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IListingRepository), typeof(ListingRepository));
+
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
             services.AddTransient<IListingService, ListingService>();
-           
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ILocationService, LocationService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

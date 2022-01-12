@@ -4,14 +4,16 @@ using Listing.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Listing.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220111200548_updated")]
+    partial class updated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +28,7 @@ namespace Listing.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -46,16 +49,12 @@ namespace Listing.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MimeType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserImageId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ListingId");
-
-                    b.HasIndex("UserImageId");
 
                     b.ToTable("Images");
                 });
@@ -88,6 +87,7 @@ namespace Listing.Repository.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -171,6 +171,7 @@ namespace Listing.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Contact")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -181,9 +182,14 @@ namespace Listing.Repository.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -220,6 +226,9 @@ namespace Listing.Repository.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ImageId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -374,10 +383,6 @@ namespace Listing.Repository.Migrations
                         .HasForeignKey("ListingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Listing.Domain.Identity.UserDetails", "UserImage")
-                        .WithMany()
-                        .HasForeignKey("UserImageId");
                 });
 
             modelBuilder.Entity("Listing.Domain.DomainModels.ListingPost", b =>
@@ -415,6 +420,15 @@ namespace Listing.Repository.Migrations
                     b.HasOne("Listing.Domain.Identity.UserDetails", "Owner")
                         .WithOne("UserWishlist")
                         .HasForeignKey("Listing.Domain.DomainModels.Wishlist", "OwnerId");
+                });
+
+            modelBuilder.Entity("Listing.Domain.Identity.UserDetails", b =>
+                {
+                    b.HasOne("Listing.Domain.DomainModels.Image", "Image")
+                        .WithOne("UserImage")
+                        .HasForeignKey("Listing.Domain.Identity.UserDetails", "ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

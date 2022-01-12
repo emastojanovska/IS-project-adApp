@@ -10,8 +10,13 @@ namespace Listing.Domain.DomainModels
     {
         public string City { get; set; }
         public string Code { get; set; }
-        public string UserId { get; set; }
-        public UserDetails User { get; set; }
+
+        public virtual ICollection<ListingPost> ListingPosts { get; set; }
+        public Location(string Code, string City)
+        {
+            this.City = City;
+            this.Code = Code;
+        }
 
     }
 }

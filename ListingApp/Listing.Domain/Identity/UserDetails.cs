@@ -13,8 +13,8 @@ namespace Listing.Domain.Identity
         public string LastName { get; set; }
         public string Address { get; set; }
         public string Contact { get; set; }
-        public Guid ImageId { get; set; }
-        public virtual Image Image { get; set; }
+    /*    public Guid ImageId { get; set; }
+        public virtual Image Image { get; set; }*/
         public virtual Wishlist UserWishlist { get; set; }
     }
 }

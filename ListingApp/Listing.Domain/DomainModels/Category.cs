@@ -8,6 +8,11 @@ namespace Listing.Domain.DomainModels
     public class Category : BaseEntity
     {
         public string Name { get; set; }
+        public virtual ICollection<ListingPost> ListingPosts { get; set; }
 
+        public Category(string Name)
+        {
+            this.Name = Name;
+        }
     }
 }

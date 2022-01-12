@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Listing.Domain.DomainModels;
 using Listing.Domain.DTO;
-using Listing.Repository;
 using Listing.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,17 +13,46 @@ namespace WebApplicationListings.Controllers
     public class ListingsController : Controller
     {
         private readonly IListingService _listingService;
+        private readonly ICategoryService _categoryService;
+        private readonly ILocationService _locationService;
 
-        public ListingsController(IListingService listingService)
+        public ListingsController(IListingService listingService, ICategoryService categoryService, ILocationService locationService)
         {
             _listingService = listingService;
+            _categoryService = categoryService;
+            _locationService = locationService;
         }
+
 
         // GET: Listings
         public IActionResult Index()
         {
+            var categories = _categoryService.GetAllCategories();
+            categories.Add(new Category("All"));
+            ViewBag.Categories = new SelectList(categories, "Name", "Name");
+
+            var locations = _locationService.GetAllLocations();
+            locations.Add(new Location(" ", "All"));
+            ViewBag.Locations = new SelectList(locations, "City", "City");
+
             var listings = _listingService.GetAllListings();
-            return View(listings);
+            ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, "All", "All");
+            return View(listingsWithFilter);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index([Bind("SelectedCategory, SelectedLocation")] ListingsWithFilter listing)
+        {
+            var categories = _categoryService.GetAllCategories();
+            categories.Add(new Category("All"));
+            ViewBag.Categories = new SelectList(categories, "Name", "Name");
+
+            var locations = _locationService.GetAllLocations();
+            locations.Add(new Location(" ", "All"));
+            ViewBag.Locations = new SelectList(locations, "City", "City");
+            var listings = _listingService.GetAllByLocationAndCategory(listing.SelectedLocation, listing.SelectedCategory);
+            ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, listing.SelectedCategory, listing.SelectedLocation);
+            return View(listingsWithFilter);
         }
 
         // GET: Listings/Details/5
@@ -49,7 +75,13 @@ namespace WebApplicationListings.Controllers
 
         // GET: Listings/Create
         public IActionResult Create()
-        {            
+        {
+            var categories = _categoryService.GetAllCategories();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+
+            var locations = _locationService.GetAllLocations();
+            ViewBag.Locations = new SelectList(locations, "Id", "City");
+
             return View();
         }
 
@@ -58,7 +90,7 @@ namespace WebApplicationListings.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Title,Description,Price,Discount,DateCreated,DateUpdated,CategoryId,Id")] ListingPost listing)
+        public IActionResult Create([Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId")] ListingPost listing)
         {
             if (ModelState.IsValid)
             {
@@ -86,6 +118,12 @@ namespace WebApplicationListings.Controllers
         // GET: Listings/Edit/5
         public IActionResult Edit(Guid? id)
         {
+            var categories = _categoryService.GetAllCategories();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+
+            var locations = _locationService.GetAllLocations();
+            ViewBag.Locations = new SelectList(locations, "Id", "City");
+
             if (id == null)
             {
                 return NotFound();
@@ -105,7 +143,7 @@ namespace WebApplicationListings.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Title,Description,Price,Discount,DateCreated,DateUpdated,CategoryId,Id")] ListingPost listing)
+        public IActionResult Edit(Guid id, [Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId, DateCreated")] ListingPost listing)
         {
             if (id != listing.Id)
             {

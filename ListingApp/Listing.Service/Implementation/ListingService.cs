@@ -5,18 +5,17 @@ using Listing.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Listing.Service.Implementation
 {
     public class ListingService : IListingService
     {
-        private readonly IRepository<ListingPost> _listingRepository;
+        private readonly IListingRepository _listingRepository;
         private readonly IRepository<ListingsInWishlist> _listingsInWishlistRepository;
         private readonly IUserRepository _userRepository;
 
 
-        public ListingService(IRepository<ListingPost> listingRepository,
+        public ListingService(IListingRepository listingRepository,
             IRepository<ListingsInWishlist> listingsInWishlistRepository,
             IUserRepository userRepository)
         {
@@ -55,6 +54,8 @@ namespace Listing.Service.Implementation
 
         public void CreateNewListing(ListingPost l)
         {
+            l.DateCreated = DateTime.Now;
+            l.DateUpdated = DateTime.Now;
             this._listingRepository.Insert(l);
         }
 
@@ -62,6 +63,19 @@ namespace Listing.Service.Implementation
         {
             var listing = this.GetDetailsForListing(id);
             this._listingRepository.Delete(listing);
+        }
+
+        public List<ListingPost> GetAllByLocationAndCategory(string location, string category)
+        {
+            if (category == "All")
+            {
+                category = "";
+            }
+            if (location == "All")
+            {
+                location = "";
+            }
+            return this._listingRepository.GetAllByLocationAndCategory(location, category).ToList();
         }
 
         public List<ListingPost> GetAllListings()
@@ -87,6 +101,7 @@ namespace Listing.Service.Implementation
 
         public void UpdeteExistingListing(ListingPost l)
         {
+            l.DateUpdated = DateTime.Now;
             this._listingRepository.Update(l);
         }
     }
