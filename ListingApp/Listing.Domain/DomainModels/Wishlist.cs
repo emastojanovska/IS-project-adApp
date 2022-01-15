@@ -10,7 +10,6 @@ namespace Listing.Domain.DomainModels
     {
         public string OwnerId { get; set; }
         public virtual UserDetails Owner { get; set; }
-
         public virtual ICollection<ListingsInWishlist> ListingsInWishlists { get; set; }
     }
 }

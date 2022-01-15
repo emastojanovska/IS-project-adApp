@@ -20,6 +20,7 @@ namespace Listing.Repository
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
 
+        public virtual DbSet<ListingsInWishlist> ListingsInWishlist { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -95,6 +96,8 @@ namespace Listing.Repository
                 .HasOne<ListingPost>(z => z.Listing)
                 .WithMany(z => z.ListingsInWishlists)
                 .HasForeignKey(z => z.ListingId);
+
+           
         }
     }
 }

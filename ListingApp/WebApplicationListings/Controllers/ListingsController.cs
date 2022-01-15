@@ -15,13 +15,17 @@ namespace WebApplicationListings.Controllers
         private readonly IListingService _listingService;
         private readonly ICategoryService _categoryService;
         private readonly ILocationService _locationService;
+        private readonly IWishlistService _wishlistService;
 
-        public ListingsController(IListingService listingService, ICategoryService categoryService, ILocationService locationService)
+
+        public ListingsController(IListingService listingService, ICategoryService categoryService, ILocationService locationService, IWishlistService wishlistService)
         {
             _listingService = listingService;
             _categoryService = categoryService;
             _locationService = locationService;
+            _wishlistService = wishlistService;
         }
+
 
 
         // GET: Listings
@@ -35,7 +39,7 @@ namespace WebApplicationListings.Controllers
             locations.Add(new Location(" ", "All"));
             ViewBag.Locations = new SelectList(locations, "City", "City");
 
-            var listings = _listingService.GetAllListings();
+            var listings = _listingService.GetAllActiveListings();
             ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, "All", "All");
             return View(listingsWithFilter);
         }
@@ -54,9 +58,15 @@ namespace WebApplicationListings.Controllers
             ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, listing.SelectedCategory, listing.SelectedLocation);
             return View(listingsWithFilter);
         }
-
+        // GET: Listings
+        public IActionResult MyPosts()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var listings = _listingService.GetAllListingsForUser(userId);
+            return View(listings);
+        }
         // GET: Listings/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
@@ -94,6 +104,8 @@ namespace WebApplicationListings.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                listing.UserId = userId;
                 _listingService.CreateNewListing(listing);
                 return RedirectToAction(nameof(Index));
             }
@@ -101,18 +113,23 @@ namespace WebApplicationListings.Controllers
             return View(listing);
         }
 
-        public IActionResult AddListingToWishlist(Guid? id)
-        {
-            AddToWishlistDto model = _listingService.GetWishlistInfo(id);
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult AddListingToWishlist([Bind("ListingId")] AddToWishlistDto item)
+        public IActionResult AddListingToWishlist(Guid id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = _listingService.AddToWishlist(item, userId);
-            return View(item);
+            ListingPost listing = _listingService.GetDetailsForListing(id);
+            AddToWishlistDto item = new AddToWishlistDto
+            {
+                SelectedListing = listing,
+                ListingId = id
+            };
+            if(_wishlistService.checkIfExist(userId, id))
+            {
+                return RedirectToAction("Index", "Listings");
+            }
+            _listingService.AddToWishlist(item, userId);
+            
+
+            return RedirectToAction("Index", "Wishlists");
         }
 
         // GET: Listings/Edit/5

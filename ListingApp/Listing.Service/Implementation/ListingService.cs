@@ -23,6 +23,7 @@ namespace Listing.Service.Implementation
             _listingsInWishlistRepository = listingsInWishlistRepository;
             _userRepository = userRepository;
         }
+
         public bool AddToWishlist(AddToWishlistDto item, string userID)
         {
             var user = this._userRepository.Get(userID);
@@ -56,6 +57,7 @@ namespace Listing.Service.Implementation
         {
             l.DateCreated = DateTime.Now;
             l.DateUpdated = DateTime.Now;
+            l.Approved = false;           
             this._listingRepository.Insert(l);
         }
 
@@ -83,6 +85,16 @@ namespace Listing.Service.Implementation
             return this._listingRepository.GetAll().ToList();
         }
 
+        public List<ListingPost> GetAllActiveListings()
+        {
+            return this._listingRepository.GetAllActive().ToList();
+        }
+
+        public List<ListingPost> GetAllInactiveListings()
+        {
+            return this._listingRepository.GetAllInactive().ToList();
+        }
+
         public ListingPost GetDetailsForListing(Guid? id)
         {
             return this._listingRepository.Get(id);
@@ -103,6 +115,17 @@ namespace Listing.Service.Implementation
         {
             l.DateUpdated = DateTime.Now;
             this._listingRepository.Update(l);
+        }
+
+        public void ApproveListing(Guid? id)
+        {
+            this._listingRepository.Approve(id);
+        }
+
+        public List<ListingPost> GetAllListingsForUser(string id)
+        {
+            return GetAllListings().Where(z => z.UserId == id).ToList();
+            /*.Where(z => z.UserId == id).*/
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Listing.Domain.DomainModels
         public string Description { get; set; }
         public double Price { get; set; }
         public int Discount { get; set; }
+        public string UserId { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
 
@@ -18,6 +19,7 @@ namespace Listing.Domain.DomainModels
         public virtual Category Category { get; set; }
 
         public Guid LocationId { get; set; }
+        public Boolean Approved { get; set; }
         public virtual Location Location { get; set; }
 
         public virtual ICollection<ListingsInWishlist> ListingsInWishlists { get; set; }

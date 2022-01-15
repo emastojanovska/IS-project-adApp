@@ -10,6 +10,10 @@ namespace Listing.Domain.DomainModels
         public string Name { get; set; }
         public virtual ICollection<ListingPost> ListingPosts { get; set; }
 
+        public Category()
+        {
+        }
+
         public Category(string Name)
         {
             this.Name = Name;

@@ -10,11 +10,16 @@ namespace Listing.Service.Interface
     {
         List<ListingPost> GetAllListings();
         ListingPost GetDetailsForListing(Guid? id);
+        void ApproveListing(Guid? id);
+
         void CreateNewListing(ListingPost l);
         void UpdeteExistingListing(ListingPost l);
         AddToWishlistDto GetWishlistInfo(Guid? id);
         void DeleteListing(Guid id);
         bool AddToWishlist(AddToWishlistDto item, string userID);
         List<ListingPost> GetAllByLocationAndCategory(string location, string category);
+        List<ListingPost> GetAllActiveListings();
+        List<ListingPost> GetAllInactiveListings();
+        List<ListingPost> GetAllListingsForUser(string id);
     }
 }

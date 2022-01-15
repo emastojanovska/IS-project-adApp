@@ -16,12 +16,14 @@ namespace WebApplicationListings.Controllers
             _categoryService = categoryService;
         }
 
+       
         // GET: Categories
         public IActionResult Index()
         {
             var categories = _categoryService.GetAllCategories();
             return View(categories);
         }
+
 
         // GET: Categories/Create
         public IActionResult Create()

@@ -47,8 +47,13 @@ namespace WebApplicationListings
             services.AddTransient<IListingService, ListingService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ILocationService, LocationService>();
+            services.AddTransient<IWishlistService, WishlistService>();
 
-            services.AddControllersWithViews();
+
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddRazorPages();
 
 

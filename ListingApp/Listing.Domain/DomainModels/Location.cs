@@ -12,6 +12,11 @@ namespace Listing.Domain.DomainModels
         public string Code { get; set; }
 
         public virtual ICollection<ListingPost> ListingPosts { get; set; }
+
+        public Location()
+        {
+
+        }
         public Location(string Code, string City)
         {
             this.City = City;

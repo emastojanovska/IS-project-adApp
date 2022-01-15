@@ -59,10 +59,35 @@ namespace Listing.Repository.Implementation
 
         public IEnumerable<ListingPost> GetAllByLocationAndCategory(string location, string category)
         {
-            return entities.Where(x => x.Location.City.Contains(location))
+            return entities
+                .Where(x => x.Approved == true)
+                .Where(x => x.Location.City.Contains(location))
                 .Where(x=>x.Category.Name.Contains(category))
                 .Include(z => z.Category).Include(z => z.Location)
                 .AsEnumerable();
+        }
+
+        public IEnumerable<ListingPost> GetAllActive()
+        {
+            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).AsEnumerable();
+
+            return all.Where(z => z.Approved).AsEnumerable();
+        }
+
+        public IEnumerable<ListingPost> GetAllInactive()
+        {
+            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).AsEnumerable();
+
+            return all.Where(z => !z.Approved).AsEnumerable();
+        }
+
+        public void Approve(Guid? id)
+        {
+            ListingPost listing = Get(id);
+            listing.Approved = true;
+            entities.Update(listing);
+            context.SaveChanges();
+
         }
     }
 }

@@ -1,0 +1,60 @@
+﻿@using Microsoft.Extensions.Options
+@model Listing.Domain.DTO.WishlistDto
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+
+    <div class="row m-4">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Discount</th>
+                    <th scope="col">Location</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Listings.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5">No active listings</td>
+                    </tr>
+                }
+                else
+                {
+                    @for (int i = 0; i < Model.Listings.Count; i++)
+                    {
+                        var item = Model.Listings[i];
+
+            <tr>
+                <th scope="row">@(i + 1)</th>
+                <td>@item.Listing.Title</td>
+                <td>@item.Listing.Description</td>
+                <td>$@item.Listing.Price</td>
+                <td>@item.Listing.Discount</td>
+                <td>@item.Listing.Location.City</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ListingId" asp-controller="Listings">Details</a> |
+
+                </td>
+
+                <td><a asp-controller="Wishlists" asp-action="DeleteFromWishlist" asp-route-id="@item.ListingId" class="btn btn-danger">Delete From Wishlist</a></td>
+            </tr>
+                    }
+                }
+            </tbody>
+            
+        </table>
+    </div>
+
+</div>
