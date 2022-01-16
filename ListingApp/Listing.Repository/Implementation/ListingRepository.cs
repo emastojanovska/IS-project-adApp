@@ -20,12 +20,13 @@ namespace Listing.Repository.Implementation
         }
         public IEnumerable<ListingPost> GetAll()
         {
-            return entities.Include(z=>z.Category).Include(z=>z.Location).AsEnumerable();
+            return entities.Include(z=>z.Category).Include(z=>z.Location).Include(z => z.ListingImages).AsEnumerable();
         }
 
         public ListingPost Get(Guid? id)
         {
-            return entities.Include(z => z.Category).Include(z => z.Location).SingleOrDefault(s => s.Id == id);
+            return entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).SingleOrDefault(s => s.Id == id);
+
         }
         public void Insert(ListingPost entity)
         {
@@ -57,26 +58,28 @@ namespace Listing.Repository.Implementation
             context.SaveChanges();
         }
 
-        public IEnumerable<ListingPost> GetAllByLocationAndCategory(string location, string category)
+        public IEnumerable<ListingPost> GetAllByLocationAndCategoryAndPrice(string location, string category, double price)
         {
             return entities
                 .Where(x => x.Approved == true)
                 .Where(x => x.Location.City.Contains(location))
                 .Where(x=>x.Category.Name.Contains(category))
+                .Where(x=>x.Price<=price)
+                .Include(x => x.ListingImages)
                 .Include(z => z.Category).Include(z => z.Location)
                 .AsEnumerable();
         }
 
         public IEnumerable<ListingPost> GetAllActive()
         {
-            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).AsEnumerable();
+            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
 
             return all.Where(z => z.Approved).AsEnumerable();
         }
 
         public IEnumerable<ListingPost> GetAllInactive()
         {
-            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).AsEnumerable();
+            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
 
             return all.Where(z => !z.Approved).AsEnumerable();
         }

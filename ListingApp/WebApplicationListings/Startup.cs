@@ -48,6 +48,10 @@ namespace WebApplicationListings
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ILocationService, LocationService>();
             services.AddTransient<IWishlistService, WishlistService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IImageService, ImageService>();
+
+
 
 
             services.AddControllersWithViews()

@@ -17,7 +17,7 @@ namespace ListingsAdminApplication.Controllers
             HttpClient client = new HttpClient();
 
 
-            string URI = "https://localhost:44306/api/Admin/GetCategories";
+            string URI = "https://localhost:5001/api/Admin/GetCategories";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -37,7 +37,7 @@ namespace ListingsAdminApplication.Controllers
         public IActionResult Create([Bind("Name")] Category category)
         {
             HttpClient client = new HttpClient();
-            string URI = "https://localhost:44306/api/Admin/CreateCategory";
+            string URI = "https://localhost:5001/api/Admin/CreateCategory";
 
             var model = new Category
             {
@@ -63,7 +63,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/Admin/GetCategory";
+            string URI = "https://localhost:5001/api/Admin/GetCategory";
 
             var model = new
             {
@@ -88,7 +88,7 @@ namespace ListingsAdminApplication.Controllers
         public IActionResult Edit(Guid id, [Bind("Name, Id")] Category category)
         {
             HttpClient client = new HttpClient();
-            string URI = "https://localhost:44306/api/Admin/EditCategory";
+            string URI = "https://localhost:5001/api/Admin/EditCategory";
 
             var model = new Category
             {
@@ -103,10 +103,8 @@ namespace ListingsAdminApplication.Controllers
             return RedirectToAction("Index");
         }
 
-
-
         // GET: Categories/Delete/5
-        public IActionResult Delete(Guid? id)
+        public IActionResult Delete(Guid id)
         {
             if (id == null)
             {
@@ -115,7 +113,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/Admin/GetCategory";
+            string URI = "https://localhost:5001/api/Admin/GetCategory";
 
             var model = new
             {
@@ -134,27 +132,19 @@ namespace ListingsAdminApplication.Controllers
                 return NotFound();
             }
 
-            return View(category);
-        }
+            client = new HttpClient();
+            URI = "https://localhost:5001/api/Admin/DeleteCategory";
 
-        // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
-        {
-            HttpClient client = new HttpClient();
-            string URI = "https://localhost:44306/api/Admin/DeleteCategory";
-
-            var model = new
+            model = new
             {
                 Id = id
             };
 
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+           content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
 
-            HttpResponseMessage responseMessage = client.PostAsync(URI, content).Result;
+           responseMessage = client.PostAsync(URI, content).Result;
 
-            return RedirectToAction("Index");
+           return RedirectToAction("Index");
         }
     }
 

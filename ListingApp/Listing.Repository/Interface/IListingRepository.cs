@@ -16,7 +16,7 @@ namespace Listing.Repository.Interface
         void Update(ListingPost entity);
         void Delete(ListingPost entity);
         void Approve(Guid? id);
-        IEnumerable<ListingPost> GetAllByLocationAndCategory(string location, string category);
+        IEnumerable<ListingPost> GetAllByLocationAndCategoryAndPrice(string location, string category, double price);
 
     }
 }

@@ -30,6 +30,7 @@ namespace Listing.Repository.Implementation
                .Include(z => z.UserWishlist)
                .Include("UserWishlist.ListingsInWishlists")
                .Include("UserWishlist.ListingsInWishlists.Wishlist")
+               .Include(z=>z.Image)
                .SingleOrDefault(s => s.Id == id);
         }
         public void Insert(UserDetails entity)

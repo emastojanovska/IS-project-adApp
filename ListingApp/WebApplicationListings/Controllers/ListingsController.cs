@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Listing.Domain.DomainModels;
 using Listing.Domain.DTO;
 using Listing.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,16 +19,17 @@ namespace WebApplicationListings.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ILocationService _locationService;
         private readonly IWishlistService _wishlistService;
+        private readonly IImageService _imageService;
 
 
-        public ListingsController(IListingService listingService, ICategoryService categoryService, ILocationService locationService, IWishlistService wishlistService)
+        public ListingsController(IListingService listingService, ICategoryService categoryService, ILocationService locationService, IWishlistService wishlistService, IImageService imageService)
         {
             _listingService = listingService;
             _categoryService = categoryService;
             _locationService = locationService;
             _wishlistService = wishlistService;
+            _imageService = imageService;
         }
-
 
 
         // GET: Listings
@@ -40,12 +44,13 @@ namespace WebApplicationListings.Controllers
             ViewBag.Locations = new SelectList(locations, "City", "City");
 
             var listings = _listingService.GetAllActiveListings();
-            ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, "All", "All");
+
+            ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, "All", "All", 1000);
             return View(listingsWithFilter);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index([Bind("SelectedCategory, SelectedLocation")] ListingsWithFilter listing)
+        public IActionResult Index([Bind("SelectedCategory, SelectedLocation, Price")] ListingsWithFilter listing)
         {
             var categories = _categoryService.GetAllCategories();
             categories.Add(new Category("All"));
@@ -54,10 +59,13 @@ namespace WebApplicationListings.Controllers
             var locations = _locationService.GetAllLocations();
             locations.Add(new Location(" ", "All"));
             ViewBag.Locations = new SelectList(locations, "City", "City");
-            var listings = _listingService.GetAllByLocationAndCategory(listing.SelectedLocation, listing.SelectedCategory);
-            ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, listing.SelectedCategory, listing.SelectedLocation);
+
+            var listings = _listingService.GetAllByLocationAndCategoryAndPrice(listing.SelectedLocation, listing.SelectedCategory, listing.Price);
+
+            ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, listing.SelectedCategory, listing.SelectedLocation, listing.Price);
             return View(listingsWithFilter);
         }
+        [Authorize]
         // GET: Listings
         public IActionResult MyPosts()
         {
@@ -82,7 +90,7 @@ namespace WebApplicationListings.Controllers
 
             return View(listing);
         }
-
+        [Authorize]
         // GET: Listings/Create
         public IActionResult Create()
         {
@@ -100,19 +108,19 @@ namespace WebApplicationListings.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId")] ListingPost listing)
+        public IActionResult Create([Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId")] ListingPost listing, List<IFormFile> images)
         {
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                listing.UserId = userId;
-                _listingService.CreateNewListing(listing);
+                _listingService.CreateNewListing(listing, userId, images);
                 return RedirectToAction(nameof(Index));
             }
-         
+
             return View(listing);
         }
 
+        [Authorize]
         public IActionResult AddListingToWishlist(Guid id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -122,16 +130,17 @@ namespace WebApplicationListings.Controllers
                 SelectedListing = listing,
                 ListingId = id
             };
-            if(_wishlistService.checkIfExist(userId, id))
+            if (_wishlistService.checkIfExist(userId, id))
             {
                 return RedirectToAction("Index", "Listings");
             }
             _listingService.AddToWishlist(item, userId);
-            
+
 
             return RedirectToAction("Index", "Wishlists");
         }
 
+        [Authorize]
         // GET: Listings/Edit/5
         public IActionResult Edit(Guid? id)
         {
@@ -160,7 +169,7 @@ namespace WebApplicationListings.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId, DateCreated")] ListingPost listing)
+        public IActionResult Edit(Guid id, [Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId, DateCreated, UserId")] ListingPost listing, List<IFormFile> images)
         {
             if (id != listing.Id)
             {
@@ -171,7 +180,7 @@ namespace WebApplicationListings.Controllers
             {
                 try
                 {
-                    _listingService.UpdeteExistingListing(listing);
+                    _listingService.UpdeteExistingListing(listing, images);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -190,8 +199,21 @@ namespace WebApplicationListings.Controllers
             return View(listing);
         }
 
+        [Authorize]
+        // GET: Listings/DeleteImage/5
+        public IActionResult DeleteImage(Guid listingId, Guid imageId)
+        {
+            var listing = _listingService.GetDetailsForListing(listingId);
+            ListingImage listingImage = _imageService.GetListingImage(imageId);
+            listing.ListingImages.Remove(listingImage);
+            _listingService.UpdeteExistingListing(listing);
+
+            return RedirectToAction("Edit", "Listings", new { id = listingId });
+        }
+
         // GET: Listings/Delete/5
-        public IActionResult Delete(Guid? id)
+        [Authorize]
+        public IActionResult Delete(Guid id)
         {
             if (id == null)
             {
@@ -205,14 +227,6 @@ namespace WebApplicationListings.Controllers
                 return NotFound();
             }
 
-            return View(listing);
-        }
-
-        // POST: Listings/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
-        {
             _listingService.DeleteListing(id);
             return RedirectToAction(nameof(Index));
         }

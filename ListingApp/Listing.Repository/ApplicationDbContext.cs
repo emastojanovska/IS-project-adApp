@@ -60,18 +60,25 @@ namespace Listing.Repository
                      .IsRequired();*/
 
             // One-to-One Relationships
-         /*   builder.Entity<UserDetails>()
-                .HasOne(z => z.Image)
-                .WithOne(z => z.UserImage)
-                .HasForeignKey<UserDetails>(z => z.ImageId);*/
+       
+            builder.Entity<UserImage>()
+                 .HasOne(z => z.Image)
+                 .WithOne(z => z.Image)
+                 .HasForeignKey<UserImage>(z => z.UserId);
+
+            builder.Entity<ListingImage>()
+              .HasOne<ListingPost>(z => z.Listing)
+              .WithMany(z => z.ListingImages)
+              .HasForeignKey(z => z.ListingId);
 
             builder.Entity<Wishlist>()
                .HasOne(z => z.Owner)
                .WithOne(z => z.UserWishlist)
                .HasForeignKey<Wishlist>(z => z.OwnerId);
 
+ 
             // One-to-Many Relationships
-            builder.Entity<Image>()
+            builder.Entity<ListingImage>()
                 .HasOne<ListingPost>(z => z.Listing)
                 .WithMany(z => z.ListingImages)
                 .HasForeignKey(z => z.ListingId);

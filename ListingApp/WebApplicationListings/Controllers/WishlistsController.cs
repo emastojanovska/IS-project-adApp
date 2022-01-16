@@ -4,10 +4,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Listing.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplicationListings.Controllers
 {
+    [Authorize]
     public class WishlistsController : Controller
     {
         private readonly IWishlistService _wishlistService;

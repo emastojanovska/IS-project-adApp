@@ -22,6 +22,8 @@ namespace ListingsAdminApplication.Models
         public virtual Location Location { get; set; }
 
         public Boolean Approved { get; set; }
+        public virtual List<Image> ListingImages { get; set; }
+
 
         public ListingPost()
         {

@@ -4,14 +4,16 @@ using Listing.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Listing.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220115173616_twelve")]
+    partial class twelve
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,10 +41,6 @@ namespace Listing.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<byte[]>("ImageData")
                         .HasColumnType("varbinary(max)");
 
@@ -55,14 +53,20 @@ namespace Listing.Repository.Migrations
                     b.Property<string>("ImageSrc")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ListingId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("MimeType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.HasIndex("ListingId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Image");
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Listing.Domain.DomainModels.ListingPost", b =>
@@ -235,6 +239,9 @@ namespace Listing.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ImageId")
+                        .IsUnique();
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -381,30 +388,13 @@ namespace Listing.Repository.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Listing.Domain.DomainModels.ListingImage", b =>
+            modelBuilder.Entity("Listing.Domain.DomainModels.Image", b =>
                 {
-                    b.HasBaseType("Listing.Domain.DomainModels.Image");
-
-                    b.Property<Guid>("ListingId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasIndex("ListingId");
-
-                    b.HasDiscriminator().HasValue("ListingImage");
-                });
-
-            modelBuilder.Entity("Listing.Domain.DomainModels.UserImage", b =>
-                {
-                    b.HasBaseType("Listing.Domain.DomainModels.Image");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
-
-                    b.HasDiscriminator().HasValue("UserImage");
+                    b.HasOne("Listing.Domain.DomainModels.ListingPost", "Listing")
+                        .WithMany("ListingImages")
+                        .HasForeignKey("ListingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Listing.Domain.DomainModels.ListingPost", b =>
@@ -442,6 +432,15 @@ namespace Listing.Repository.Migrations
                     b.HasOne("Listing.Domain.Identity.UserDetails", "Owner")
                         .WithOne("UserWishlist")
                         .HasForeignKey("Listing.Domain.DomainModels.Wishlist", "OwnerId");
+                });
+
+            modelBuilder.Entity("Listing.Domain.Identity.UserDetails", b =>
+                {
+                    b.HasOne("Listing.Domain.DomainModels.Image", "Image")
+                        .WithOne("UserImage")
+                        .HasForeignKey("Listing.Domain.Identity.UserDetails", "ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -493,22 +492,6 @@ namespace Listing.Repository.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Listing.Domain.DomainModels.ListingImage", b =>
-                {
-                    b.HasOne("Listing.Domain.DomainModels.ListingPost", "Listing")
-                        .WithMany("ListingImages")
-                        .HasForeignKey("ListingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Listing.Domain.DomainModels.UserImage", b =>
-                {
-                    b.HasOne("Listing.Domain.Identity.UserDetails", "Image")
-                        .WithOne("Image")
-                        .HasForeignKey("Listing.Domain.DomainModels.UserImage", "UserId");
                 });
 #pragma warning restore 612, 618
         }

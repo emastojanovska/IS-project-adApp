@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Listing.Domain.DomainModels;
 using Listing.Domain.Identity;
+using Listing.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,11 +20,92 @@ namespace WebApplicationListings.Controllers
 
         private readonly UserManager<UserDetails> userManager;
         private readonly SignInManager<UserDetails> signInManager;
-        public AccountController(UserManager<UserDetails> userManager, SignInManager<UserDetails> signInManager)
+        private readonly IUserService userService;
+        private readonly IImageService imageService;
+
+        public AccountController(UserManager<UserDetails> userManager, SignInManager<UserDetails> signInManager,
+            IUserService _userService, IImageService _imageService)
         {
 
             this.userManager = userManager;
             this.signInManager = signInManager;
+            userService = _userService;
+            imageService = _imageService;
+        }
+        [Authorize]
+        public async Task<IActionResult> Index()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userDetails = userService.Get(userId);
+
+            return View(userDetails);
+        }
+
+        [Authorize]
+        // GET: Listings/Edit/5
+        public IActionResult Edit(string id)
+        {
+        
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+   
+            var userDetails = userService.Get(id);
+
+            if (userDetails == null)
+            {
+                return NotFound();
+            }
+            return View(userDetails);
+        }
+
+        // POST: Listings/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(string id, [Bind("FirstName,LastName,Contact,Address, Id")] UserDetails userDetails, IFormFile image)
+        {
+            if (id != userDetails.Id)
+            {
+                return NotFound();
+            }
+
+            var data = GetByteArrayFromImage(image);
+            var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
+            var imageSrc = "data:image/png;base64," + imageDataBase64;
+
+            UserImage userImage = new UserImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    userService.UpdateExistingUserDetails(userDetails, id, userImage);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserDetailsExist(userDetails.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(userDetails);
+        }
+        private bool UserDetailsExist(string id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userDetails = userService.Get(userId);
+            return userDetails!= null;
         }
 
         public IActionResult Register()
@@ -28,12 +113,27 @@ namespace WebApplicationListings.Controllers
             UserRegistrationDto model = new UserRegistrationDto();
             return View(model);
         }
+        private byte[] GetByteArrayFromImage(IFormFile file)
+        {
+            using (var target = new MemoryStream())
+            {
+                file.CopyTo(target);
+                return target.ToArray();
+            }
+        }
 
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> Register(UserRegistrationDto request)
+        public async Task<IActionResult> Register(UserRegistrationDto request, IFormFile image)
         {
             if (ModelState.IsValid)
             {
+                var data = GetByteArrayFromImage(image);
+                var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
+                var imageSrc = "data:image/png;base64," + imageDataBase64;
+
+                UserImage userImage = new UserImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
+            
+
                 var userCheck = await userManager.FindByEmailAsync(request.Email);
                 if (userCheck == null)
                 {
@@ -44,12 +144,33 @@ namespace WebApplicationListings.Controllers
                         Email = request.Email,
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        Address = request.Address,
+                        Contact = request.Contact,
                         UserWishlist = new Wishlist()
                     };
                     var result = await userManager.CreateAsync(user, request.Password);
+
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("Login");
+                        user.Image = userImage;
+                        result = await userManager.UpdateAsync(user);
+                        if(result.Succeeded)
+                        {
+                            return RedirectToAction("Login");
+                        }
+                        else
+                        {
+                            if (result.Errors.Count() > 0)
+                            {
+                                foreach (var error in result.Errors)
+                                {
+                                    ModelState.AddModelError("message", error.Description);
+                                }
+                            }
+                            return View(request);
+                        }
                     }
                     else
                     {

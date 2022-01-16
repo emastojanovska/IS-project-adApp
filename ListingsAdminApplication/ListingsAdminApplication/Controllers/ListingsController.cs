@@ -16,7 +16,7 @@ namespace ListingsAdminApplication.Controllers
         {
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListings";
+            string URI = "https://localhost:5001/api/AdminListings/GetListings";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -29,7 +29,7 @@ namespace ListingsAdminApplication.Controllers
         {
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetInactiveListings";
+            string URI = "https://localhost:5001/api/AdminListings/GetInactiveListings";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -48,7 +48,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListingPostDetails";
+            string URI = "https://localhost:5001/api/AdminListings/GetListingPostDetails";
 
             var model = new
             {
@@ -78,7 +78,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListing";
+            string URI = "https://localhost:5001/api/AdminListings/GetListing";
 
             var model = new
             {
@@ -97,27 +97,22 @@ namespace ListingsAdminApplication.Controllers
                 return NotFound();
             }
 
-            return View(listing);
-        }
 
-        // POST: Listings/Approve/5
-        [HttpPost, ActionName("Approve")]
-        [ValidateAntiForgeryToken]
-        public IActionResult ApproveConfirmed(Guid id)
-        {
-            HttpClient client = new HttpClient();
-            string URI = "https://localhost:44306/api/AdminListings/ApproveListing";
+            client = new HttpClient();
+            URI = "https://localhost:5001/api/AdminListings/ApproveListing";
 
-            var model = new
+             model = new
             {
                 Id = id
             };
 
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
 
-            HttpResponseMessage responseMessage = client.PostAsync(URI, content).Result;
+            responseMessage = client.PostAsync(URI, content).Result;
 
             return RedirectToAction("Index");
         }
+
+  
     }
 }

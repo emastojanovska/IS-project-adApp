@@ -19,5 +19,6 @@ namespace Listing.Domain.Identity
 
         [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
+
     }
 }

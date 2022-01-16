@@ -1,5 +1,6 @@
 ﻿using Listing.Domain.DomainModels;
 using Listing.Domain.DTO;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,14 +13,15 @@ namespace Listing.Service.Interface
         ListingPost GetDetailsForListing(Guid? id);
         void ApproveListing(Guid? id);
 
-        void CreateNewListing(ListingPost l);
-        void UpdeteExistingListing(ListingPost l);
+        void CreateNewListing(ListingPost l, string userId, List<IFormFile> images);
+        void UpdeteExistingListing(ListingPost l, List<IFormFile> images);
         AddToWishlistDto GetWishlistInfo(Guid? id);
         void DeleteListing(Guid id);
         bool AddToWishlist(AddToWishlistDto item, string userID);
-        List<ListingPost> GetAllByLocationAndCategory(string location, string category);
+        List<ListingPost> GetAllByLocationAndCategoryAndPrice(string location, string category, double price);
         List<ListingPost> GetAllActiveListings();
         List<ListingPost> GetAllInactiveListings();
         List<ListingPost> GetAllListingsForUser(string id);
+        void UpdeteExistingListing(ListingPost listing);
     }
 }

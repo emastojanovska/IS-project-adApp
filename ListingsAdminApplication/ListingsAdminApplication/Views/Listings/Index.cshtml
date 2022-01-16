@@ -36,6 +36,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.ListingImages)
+            </th>
             <th></th>
             <th></th>
         </tr>
@@ -68,8 +71,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Location.City)
             </td>
+            @for (int j = 0; j < item.ListingImages.Count; j++)
+            {
+                var image = item.ListingImages.ElementAt(j);
+                <td class="col-sm-3">
+                    <img id="ItemPreview" src="@image.ImageSrc" width="500">
+                </td>
+            }
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
             </td>
             <td>
                 @if (item.Approved)
@@ -79,9 +89,42 @@
                 }
                 else
                 {
-                    <a asp-action="Approve" asp-route-id="@item.Id">Approve</a>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+                        Approve
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Approve</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to approve this listing post??
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <form asp-action="Approve">
+                                        <input type="hidden" asp-for="@item.Id" name="id" />
+                                        <input type="submit" value="Approve" class="btn btn-danger" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 }
             </td>
+            <td>
+                <button type="button" class="btn btn-danger">
+                    Disapprove
+                </button>
+
+            </td>
+            <td>
         </tr>
         }
     </tbody>

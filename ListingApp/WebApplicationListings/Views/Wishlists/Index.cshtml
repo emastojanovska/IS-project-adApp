@@ -19,6 +19,7 @@
                     <th scope="col">Price</th>
                     <th scope="col">Discount</th>
                     <th scope="col">Location</th>
+                    <th scope="col">Images</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -43,6 +44,13 @@
                 <td>$@item.Listing.Price</td>
                 <td>@item.Listing.Discount</td>
                 <td>@item.Listing.Location.City</td>
+                @for (int j = 0; j < item.Listing.ListingImages.Count; j++)
+                {
+                    var image = item.Listing.ListingImages.ElementAt(j);
+                    <td class="col-sm-3">
+                        <img id="ItemPreview" src="@image.ImageSrc" width="500">
+                    </td>
+                }
                 <td>
                     <a asp-action="Details" asp-route-id="@item.ListingId" asp-controller="Listings">Details</a> |
 

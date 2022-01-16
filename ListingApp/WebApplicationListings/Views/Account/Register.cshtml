@@ -6,10 +6,47 @@
 <div class="container">
     <h1>Register</h1>
     @Html.ValidationSummary()
-    <form asp-action="Register" asp-controller="Account" method="post">
+    <form asp-action="Register" asp-controller="Account" method="post" enctype="multipart/form-data">
 
         <div class="registerdiv">
 
+            <div class="form-group">
+                <label>Choose image profile</label>
+                <br />
+                <input type="file" name="image" id="image" accept="image/*" />
+            </div>
+
+            <div class="form-group col-sm-12">
+                <label asp-for="@Model.FirstName" class="col-lg-3 control-label"></label>
+                <br>
+                <div class="col-lg-9">
+                    @Html.TextBoxFor(m => m.FirstName, new { placeholder = "First Name", @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12">
+                <label asp-for="@Model.LastName" class="col-lg-3 control-label"></label>
+                <br>
+                <div class="col-lg-9">
+                    @Html.TextBoxFor(m => m.LastName, new { placeholder = "Last Name", @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12">
+                <label asp-for="@Model.Contact" class="col-lg-3 control-label"></label>
+                <br>
+                <div class="col-lg-9">
+                    @Html.TextBoxFor(m => m.Contact, new { placeholder = "Contact phone", @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12">
+                <label asp-for="@Model.Address" class="col-lg-3 control-label"></label>
+                <br>
+                <div class="col-lg-9">
+                    @Html.TextBoxFor(m => m.Address, new { placeholder = "Address", @class = "form-control" })
+                </div>
+            </div>
 
             <div class="form-group col-sm-12">
                 <label asp-for="@Model.Email" class="col-lg-3 control-label"></label>

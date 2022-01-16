@@ -2,8 +2,10 @@
 using Listing.Domain.DTO;
 using Listing.Repository.Interface;
 using Listing.Service.Interface;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Listing.Service.Implementation
@@ -53,12 +55,32 @@ namespace Listing.Service.Implementation
             return false;
         }
 
-        public void CreateNewListing(ListingPost l)
+        public void CreateNewListing(ListingPost l, string userId, List<IFormFile> images)
         {
+            foreach (var image in images)
+            {
+                var data = GetByteArrayFromImage(image);
+                var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
+                var imageSrc = "data:image/png;base64," + imageDataBase64;
+
+                ListingImage ListingImage = new ListingImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
+
+                l.ListingImages.Add(ListingImage);
+            }
             l.DateCreated = DateTime.Now;
             l.DateUpdated = DateTime.Now;
-            l.Approved = false;           
+            l.Approved = false;
+            l.UserId = userId;
+
             this._listingRepository.Insert(l);
+        }
+        private byte[] GetByteArrayFromImage(IFormFile file)
+        {
+            using (var target = new MemoryStream())
+            {
+                file.CopyTo(target);
+                return target.ToArray();
+            }
         }
 
         public void DeleteListing(Guid id)
@@ -67,7 +89,7 @@ namespace Listing.Service.Implementation
             this._listingRepository.Delete(listing);
         }
 
-        public List<ListingPost> GetAllByLocationAndCategory(string location, string category)
+        public List<ListingPost> GetAllByLocationAndCategoryAndPrice(string location, string category, double price)
         {
             if (category == "All")
             {
@@ -77,7 +99,7 @@ namespace Listing.Service.Implementation
             {
                 location = "";
             }
-            return this._listingRepository.GetAllByLocationAndCategory(location, category).ToList();
+            return this._listingRepository.GetAllByLocationAndCategoryAndPrice(location, category, price).ToList();
         }
 
         public List<ListingPost> GetAllListings()
@@ -111,11 +133,27 @@ namespace Listing.Service.Implementation
             return model;
         }
 
-        public void UpdeteExistingListing(ListingPost l)
+        public void UpdeteExistingListing(ListingPost l, List<IFormFile> images)
         {
+            foreach (var image in images)
+            {
+                var data = GetByteArrayFromImage(image);
+                var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
+                var imageSrc = "data:image/png;base64," + imageDataBase64;
+
+                ListingImage ListingImage = new ListingImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
+
+                l.ListingImages.Add(ListingImage);
+            }
             l.DateUpdated = DateTime.Now;
             this._listingRepository.Update(l);
         }
+        public void UpdeteExistingListing(ListingPost listing)
+        {
+            listing.DateUpdated = DateTime.Now;
+            this._listingRepository.Update(listing);
+        }
+
 
         public void ApproveListing(Guid? id)
         {
