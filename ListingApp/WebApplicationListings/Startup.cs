@@ -18,15 +18,22 @@ using Listing.Repository.Interface;
 using Listing.Repository.Implementation;
 using Listing.Service.Interface;
 using Listing.Service.Implementation;
+using Listing.Domain;
+
+
 
 namespace WebApplicationListings
 {
     public class Startup
     {
+        private EmailSettings emailService;
         public Startup(IConfiguration configuration)
         {
+            emailService = new EmailSettings();
             Configuration = configuration;
+            Configuration.GetSection("EmailSettings").Bind(emailService);
         }
+
 
         public IConfiguration Configuration { get; }
 
@@ -44,6 +51,9 @@ namespace WebApplicationListings
 
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
+            services.AddScoped<EmailSettings>(es => emailService);
+            services.AddScoped<IEmailService, EmailService>(email => new EmailService(emailService));
+
             services.AddTransient<IListingService, ListingService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ILocationService, LocationService>();
@@ -51,8 +61,7 @@ namespace WebApplicationListings
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IImageService, ImageService>();
 
-
-
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>

@@ -16,7 +16,7 @@ namespace ListingsAdminApplication.Controllers
         {
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListings";
+            string URI = "https://localhost:5001/api/AdminListings/GetListings";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -29,7 +29,7 @@ namespace ListingsAdminApplication.Controllers
         {
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetInactiveListings";
+            string URI = "https://localhost:5001/api/AdminListings/GetInactiveListings";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -48,7 +48,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListingPostDetails";
+            string URI = "https://localhost:5001/api/AdminListings/GetListingPostDetails";
 
             var model = new
             {
@@ -68,8 +68,8 @@ namespace ListingsAdminApplication.Controllers
             return View(listing);
         }
 
-        // GET: Listings/Approve/5
-        public IActionResult Approve(Guid? id)
+        // GET: Listings/Validate/5
+        public IActionResult Validate(Guid? id, String action)
         {
             if (id == null)
             {
@@ -78,7 +78,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListing";
+            string URI = "https://localhost:5001/api/AdminListings/GetListing";
 
             var model = new
             {
@@ -99,20 +99,22 @@ namespace ListingsAdminApplication.Controllers
 
 
             client = new HttpClient();
-            URI = "https://localhost:44306/api/AdminListings/ApproveListing";
+            URI = "https://localhost:5001/api/AdminListings/ApproveListing";
 
-             model = new
+            var validateModel = new
             {
-                Id = id
+                Id = id,
+                Action = action 
             };
 
-            content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            content = new StringContent(JsonConvert.SerializeObject(validateModel), Encoding.UTF8, "application/json");
 
             responseMessage = client.PostAsync(URI, content).Result;
 
             return RedirectToAction("Index");
         }
 
-  
+       
+
     }
 }

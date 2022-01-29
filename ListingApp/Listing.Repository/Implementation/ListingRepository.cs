@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Listing.Repository.Implementation
 {
-    public class ListingRepository: IListingRepository
+    public class ListingRepository : IListingRepository
     {
         private readonly ApplicationDbContext context;
         private DbSet<ListingPost> entities;
@@ -20,7 +20,7 @@ namespace Listing.Repository.Implementation
         }
         public IEnumerable<ListingPost> GetAll()
         {
-            return entities.Include(z=>z.Category).Include(z=>z.Location).Include(z => z.ListingImages).AsEnumerable();
+            return entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
         }
 
         public ListingPost Get(Guid? id)
@@ -61,10 +61,10 @@ namespace Listing.Repository.Implementation
         public IEnumerable<ListingPost> GetAllByLocationAndCategoryAndPrice(string location, string category, double price)
         {
             return entities
-                .Where(x => x.Approved == true)
+                .Where(x => x.Status == "approved")
                 .Where(x => x.Location.City.Contains(location))
-                .Where(x=>x.Category.Name.Contains(category))
-                .Where(x=>x.Price<=price)
+                .Where(x => x.Category.Name.Contains(category))
+                .Where(x => x.Price <= price)
                 .Include(x => x.ListingImages)
                 .Include(z => z.Category).Include(z => z.Location)
                 .AsEnumerable();
@@ -74,20 +74,20 @@ namespace Listing.Repository.Implementation
         {
             IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
 
-            return all.Where(z => z.Approved).AsEnumerable();
+            return all.Where(z => z.Status == "approved").AsEnumerable();
         }
 
         public IEnumerable<ListingPost> GetAllInactive()
         {
             IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
 
-            return all.Where(z => !z.Approved).AsEnumerable();
+            return all.Where(z => z.Status == "undefined").AsEnumerable();
         }
 
-        public void Approve(Guid? id)
+        public void Validate(Guid? id, string action)
         {
             ListingPost listing = Get(id);
-            listing.Approved = true;
+            listing.Status = action;
             entities.Update(listing);
             context.SaveChanges();
 

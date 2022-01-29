@@ -21,7 +21,7 @@ namespace ListingsAdminApplication.Models
         public Guid LocationId { get; set; }
         public virtual Location Location { get; set; }
 
-        public Boolean Approved { get; set; }
+        public string Status { get; set; }
         public virtual List<Image> ListingImages { get; set; }
 
 

@@ -19,7 +19,7 @@ namespace Listing.Domain.DomainModels
         public virtual Category Category { get; set; }
 
         public Guid LocationId { get; set; }
-        public Boolean Approved { get; set; }
+        public string Status { get; set; }
         public virtual Location Location { get; set; }
         public virtual ICollection<ListingsInWishlist> ListingsInWishlists { get; set; }
         public virtual List<ListingImage> ListingImages { get; set; }

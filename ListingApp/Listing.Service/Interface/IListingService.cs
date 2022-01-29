@@ -11,7 +11,7 @@ namespace Listing.Service.Interface
     {
         List<ListingPost> GetAllListings();
         ListingPost GetDetailsForListing(Guid? id);
-        void ApproveListing(Guid? id);
+        void ValidateListing(Guid? id, string action);
 
         void CreateNewListing(ListingPost l, string userId, List<IFormFile> images);
         void UpdeteExistingListing(ListingPost l, List<IFormFile> images);

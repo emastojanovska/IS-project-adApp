@@ -69,10 +69,11 @@ namespace Listing.Service.Implementation
             }
             l.DateCreated = DateTime.Now;
             l.DateUpdated = DateTime.Now;
-            l.Approved = false;
+            l.Status = "undefined";
             l.UserId = userId;
 
             this._listingRepository.Insert(l);
+
         }
         private byte[] GetByteArrayFromImage(IFormFile file)
         {
@@ -155,9 +156,9 @@ namespace Listing.Service.Implementation
         }
 
 
-        public void ApproveListing(Guid? id)
+        public void ValidateListing(Guid? id, string action)
         {
-            this._listingRepository.Approve(id);
+            this._listingRepository.Validate(id, action);
         }
 
         public List<ListingPost> GetAllListingsForUser(string id)

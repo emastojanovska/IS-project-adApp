@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Listing.Domain.DomainModels;
 using Listing.Domain.DTO;
+using Listing.Repository.Interface;
 using Listing.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,15 +22,18 @@ namespace WebApplicationListings.Controllers
         private readonly ILocationService _locationService;
         private readonly IWishlistService _wishlistService;
         private readonly IImageService _imageService;
+        private readonly IEmailService _emailService;
 
-
-        public ListingsController(IListingService listingService, ICategoryService categoryService, ILocationService locationService, IWishlistService wishlistService, IImageService imageService)
+        public ListingsController(IListingService listingService, ICategoryService categoryService, 
+            ILocationService locationService, IWishlistService wishlistService, IImageService imageService,
+            IEmailService emailService)
         {
             _listingService = listingService;
             _categoryService = categoryService;
             _locationService = locationService;
             _wishlistService = wishlistService;
             _imageService = imageService;
+            _emailService = emailService;
         }
 
 
@@ -108,12 +113,14 @@ namespace WebApplicationListings.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId")] ListingPost listing, List<IFormFile> images)
+        public async Task<IActionResult> Create([Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId")] ListingPost listing, List<IFormFile> images)
         {
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 _listingService.CreateNewListing(listing, userId, images);
+
+                await _emailService.SendEmailAsync(listing,"newListing", "");
                 return RedirectToAction(nameof(Index));
             }
 

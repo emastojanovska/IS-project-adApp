@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Threading.Tasks;
 using Listing.Domain.DomainModels;
 using Listing.Service.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplicationListings.Controllers.ApiControllers
@@ -15,10 +12,14 @@ namespace WebApplicationListings.Controllers.ApiControllers
     public class AdminListingsController : ControllerBase
     {
         private readonly IListingService _listingService;
+        private readonly IEmailService _emailService;
+        private readonly IUserService _userService;
 
-        public AdminListingsController(IListingService listingService)
+        public AdminListingsController(IListingService listingService, IEmailService emailService, IUserService userService)
         {
             this._listingService = listingService;
+            this._emailService = emailService;
+            this._userService = userService;
         }
 
         [HttpGet("[action]")]
@@ -52,11 +53,18 @@ namespace WebApplicationListings.Controllers.ApiControllers
         }
 
         [HttpPost("[action]")]
-        public bool ApproveListing(BaseEntity model)
+        public async Task<bool> ApproveListing(ValidateEntity model)
         {
             try
             {
-                _listingService.ApproveListing(model.Id);
+                _listingService.ValidateListing(model.Id, model.Action);
+                ListingPost listing = _listingService.GetDetailsForListing(model.Id);
+                string userEmail = _userService.Get(listing.UserId).Email;
+                await _emailService.SendEmailAsync(listing, model.Action, userEmail);
+                if(model.Action=="disapproved")
+                {
+                    _listingService.DeleteListing(model.Id);
+                }
                 return true;
             }
             catch (DbUpdateConcurrencyException)
