@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Listing.Domain.DomainModels
 {
     public class ListingPost : BaseEntity
-    {
+    { 
+        [Required(ErrorMessage = "The Title field is required")]
         public string Title { get; set; }
+
+        [Required(ErrorMessage = "The Description field is required")]
         public string Description { get; set; }
         public double Price { get; set; }
         public int Discount { get; set; }

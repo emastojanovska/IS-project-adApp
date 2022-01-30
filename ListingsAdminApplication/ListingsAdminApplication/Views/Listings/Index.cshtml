@@ -5,7 +5,6 @@
 }
 
 
-
 <h1>Ads</h1>
 <a class="btn btn-dark" asp-action="Inactive">VIEW PENDING REQUESTS</a>
 
@@ -36,16 +35,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ListingImages)
-            </th>
             <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
+        @{var i = 0; }
         @foreach (var item in Model)
         {
+            i = i + 1;
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
@@ -71,13 +69,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Location.City)
                 </td>
-                @for (int j = 0; j < item.ListingImages.Count; j++)
-                {
-                    var image = item.ListingImages.ElementAt(j);
-                    <td class="col-sm-3">
-                        <img id="ItemPreview" src="@image.ImageSrc" width="500">
-                    </td>
-                }
+
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 </td>
@@ -88,12 +80,12 @@
                     }
                     else if (item.Status == "undefined")
                     {
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+                        <button type="button" class="btn btn-success" onclick="ShowModal(@item.Id)">
                             Approve
                         </button>
 
                         <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -107,11 +99,8 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <form asp-action="Validate">
-                                            <input type="hidden" name="action" value="approved" />
-                                            <input type="hidden" asp-for="@item.Id" name="id" />
-                                            <input type="submit" value="Approve" class="btn btn-danger" />
-                                        </form>
+                                        <a asp-action="Validate" asp-route-id="@item.Id"
+                                           asp-route-action="@item.Id">Approve</a>
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +108,7 @@
                     }
                 </td>
                 <td>
-                     @if (item.Status == "undefined")
+                    @if (item.Status == "undefined")
                     {
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal2">
                             Disapprove
@@ -139,11 +128,8 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <form asp-action="Validate">
-                                            <input type="hidden" asp-for="@item.Id" name="id" />
-                                            <input type="hidden" name="action" value="disapproved" />
-                                            <input type="submit" value="Disapprove" class="btn btn-danger" />
-                                        </form>
+                                        <a asp-action="Validate" asp-route-id="@item.Id"
+                                           asp-route-action="@item.Id">Disapprove</a>
                                     </div>
                                 </div>
                             </div>
@@ -155,3 +141,12 @@
         }
     </tbody>
 </table>
+
+@section scripts{
+    <script>
+        function ShowModal(id) {
+            var call = "#" + id;
+            $(call).trigger("focus");
+        };
+    </script>
+}

@@ -176,7 +176,7 @@ namespace WebApplicationListings.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId, DateCreated, UserId")] ListingPost listing, List<IFormFile> images)
+        public IActionResult Edit(Guid id, [Bind("Title,Description,Price,Discount,CategoryId,Id,LocationId, DateCreated, UserId, Status")] ListingPost listing, List<IFormFile> images)
         {
             if (id != listing.Id)
             {

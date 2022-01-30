@@ -50,9 +50,12 @@
                 @Html.DisplayFor(model => model.Email)
             </td>
 
-            <td>
-                <img id="ItemPreview" src="@Model.Image.ImageSrc" width="500">
-            </td>
+            @if (Model.Image != null)
+            {
+                <td>
+                    <img id="ItemPreview" src="@Model.Image.ImageSrc" width="500">
+                </td>
+            }
             <td>
                 <a class="btn btn-danger" asp-action="Edit" asp-route-id="@Model.Id">
                     Edit your information

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace WebApplicationListings.Controllers
 {
@@ -42,16 +43,16 @@ namespace WebApplicationListings.Controllers
         }
 
         [Authorize]
-        // GET: Listings/Edit/5
+        // GET: Account/Edit/5
         public IActionResult Edit(string id)
         {
-        
+
             if (id == null)
             {
                 return NotFound();
             }
 
-   
+
             var userDetails = userService.Get(id);
 
             if (userDetails == null)
@@ -61,7 +62,7 @@ namespace WebApplicationListings.Controllers
             return View(userDetails);
         }
 
-        // POST: Listings/Edit/5
+        // POST: Account/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -73,17 +74,25 @@ namespace WebApplicationListings.Controllers
                 return NotFound();
             }
 
-            var data = GetByteArrayFromImage(image);
-            var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
-            var imageSrc = "data:image/png;base64," + imageDataBase64;
-
-            UserImage userImage = new UserImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    userService.UpdateExistingUserDetails(userDetails, id, userImage);
+                    if (image != null)
+                    {
+                        var data = GetByteArrayFromImage(image);
+                        var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
+                        var imageSrc = "data:image/png;base64," + imageDataBase64;
+
+                        UserImage userImage = new UserImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
+                        userService.UpdateExistingUserDetails(userDetails, id, userImage);
+
+                    }
+                    else
+                    {
+                        userService.UpdateExistingUserDetails(userDetails, id, null);
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -101,11 +110,23 @@ namespace WebApplicationListings.Controllers
 
             return View(userDetails);
         }
+        [Authorize]
+        // GET: Account/DeleteImage/5
+        public IActionResult DeleteImage()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userDetails = userService.Get(userId);
+            userDetails.Image = null;
+            userService.AddImageToUser(userDetails, null);
+
+            return RedirectToAction("Edit", "Account", new { id = userId });
+        }
+
         private bool UserDetailsExist(string id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userDetails = userService.Get(userId);
-            return userDetails!= null;
+            return userDetails != null;
         }
 
         public IActionResult Register()
@@ -123,17 +144,10 @@ namespace WebApplicationListings.Controllers
         }
 
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> Register(UserRegistrationDto request, IFormFile image)
+        public async Task<IActionResult> Register(UserRegistrationDto request, IFormFile image, string stripeEmail, string stripeToken)
         {
             if (ModelState.IsValid)
             {
-                var data = GetByteArrayFromImage(image);
-                var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
-                var imageSrc = "data:image/png;base64," + imageDataBase64;
-
-                UserImage userImage = new UserImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
-            
-
                 var userCheck = await userManager.FindByEmailAsync(request.Email);
                 if (userCheck == null)
                 {
@@ -154,23 +168,26 @@ namespace WebApplicationListings.Controllers
 
                     if (result.Succeeded)
                     {
-                        user.Image = userImage;
-                        result = await userManager.UpdateAsync(user);
-                        if(result.Succeeded)
+                        if (image != null)
+                        {
+                            var data = GetByteArrayFromImage(image);
+                            var imageDataBase64 = Convert.ToBase64String(data, 0, data.Length);
+                            var imageSrc = "data:image/png;base64," + imageDataBase64;
+
+                            UserImage userImage = new UserImage(data, Path.GetFileName(image.FileName), image.ContentType, imageDataBase64, imageSrc);
+                            userService.AddImageToUser(user, userImage);
+                        }
+                        var payResult = PayOrder(stripeEmail, stripeToken);
+                        if (payResult)
                         {
                             return RedirectToAction("Login");
                         }
                         else
                         {
-                            if (result.Errors.Count() > 0)
-                            {
-                                foreach (var error in result.Errors)
-                                {
-                                    ModelState.AddModelError("message", error.Description);
-                                }
-                            }
                             return View(request);
+
                         }
+
                     }
                     else
                     {
@@ -192,6 +209,26 @@ namespace WebApplicationListings.Controllers
             }
             return View(request);
 
+        }
+        public Boolean PayOrder(string stripeEmail, string stripeToken)
+        {
+            var customerService = new CustomerService();
+            var chargeService = new ChargeService();
+            var customer = customerService.Create(new CustomerCreateOptions
+            {
+                Email = stripeEmail,
+                Source = stripeToken
+            });
+
+            var charge = chargeService.Create(new ChargeCreateOptions
+            {
+                Amount = 500,
+                Description = "Listing Application Payment",
+                Currency = "usd",
+                Customer = customer.Id
+            });
+
+            return charge.Status == "succeeded";
         }
 
         [HttpGet]

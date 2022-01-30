@@ -15,7 +15,7 @@ namespace Listing.Service.Implementation
 
         public UserService(IUserRepository _userRepository)
         {
-           userRepository = _userRepository;
+            userRepository = _userRepository;
         }
         public UserDetails Get(string id)
         {
@@ -29,9 +29,20 @@ namespace Listing.Service.Implementation
             user.LastName = userDetails.LastName;
             user.Contact = userDetails.Contact;
             user.Address = userDetails.Address;
+            user.Address = userDetails.Address;
+            user.Address = userDetails.Address;
+            if(image!=null)
             user.Image = image;
 
             this.userRepository.Update(user);
+        }
+        public Boolean AddImageToUser(UserDetails userDetails, UserImage userImage)
+        {
+            userDetails.Image = userImage;
+
+            this.userRepository.Update(userDetails);
+
+            return true;
         }
     }
 }

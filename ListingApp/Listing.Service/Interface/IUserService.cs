@@ -10,6 +10,7 @@ namespace Listing.Service.Interface
     {
         UserDetails Get(string id);
         void UpdateExistingUserDetails(UserDetails userDetails, string id, UserImage image);
+        Boolean AddImageToUser(UserDetails userDetails, UserImage userImage);
 
     }
 }

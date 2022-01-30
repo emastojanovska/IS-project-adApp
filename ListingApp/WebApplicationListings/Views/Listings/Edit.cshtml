@@ -42,15 +42,18 @@
             </div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="DateCreated" />
-            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="UserId" /> 
+            <input type="hidden" asp-for="Status" />
+
             <div>
                 @for (int i = 0; i < Model.ListingImages.Count; i++)
                 {
                     var item = Model.ListingImages.ElementAt(i);
-                <div class="btn-group">
-                    <a asp-action="DeleteImage" asp-route-listingId="@Model.Id" asp-route-imageId ="@item.Id"> Delete image
-                    </a>
-                </div>
+                    <div class="btn-group">
+                        <a asp-action="DeleteImage" asp-route-listingId="@Model.Id" asp-route-imageId="@item.Id">
+                            Delete image
+                        </a>
+                    </div>
                     <div class="col-sm-12">
                         <img id="ItemPreview" src="@item.ImageSrc" width="300">
                     </div>

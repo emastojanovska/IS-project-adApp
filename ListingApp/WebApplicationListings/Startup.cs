@@ -19,8 +19,7 @@ using Listing.Repository.Implementation;
 using Listing.Service.Interface;
 using Listing.Service.Implementation;
 using Listing.Domain;
-
-
+using Stripe;
 
 namespace WebApplicationListings
 {
@@ -54,6 +53,8 @@ namespace WebApplicationListings
             services.AddScoped<EmailSettings>(es => emailService);
             services.AddScoped<IEmailService, EmailService>(email => new EmailService(emailService));
 
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+
             services.AddTransient<IListingService, ListingService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ILocationService, LocationService>();
@@ -75,6 +76,8 @@ namespace WebApplicationListings
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

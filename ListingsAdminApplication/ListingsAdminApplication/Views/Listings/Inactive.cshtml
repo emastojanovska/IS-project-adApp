@@ -35,9 +35,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
-            <th>
-                @Html.DisplayNameFor(model=>model.ListingImages)
-            </th>
             <th></th>
             <th></th>
         </tr>
@@ -70,13 +67,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Location.City)
                 </td>
-                @for (int j = 0; j < item.ListingImages.Count; j++)
-                {
-                    var image = item.ListingImages.ElementAt(j);
-                    <td class="col-sm-3">
-                        <img id="ItemPreview" src="@image.ImageSrc" width="500">
-                    </td>
-                }
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 </td>

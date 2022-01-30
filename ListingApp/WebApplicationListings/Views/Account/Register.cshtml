@@ -1,4 +1,6 @@
-﻿@model Listing.Domain.Identity.UserRegistrationDto
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<Listing.Domain.StripeSettings> Stripe
+@model Listing.Domain.Identity.UserRegistrationDto
 @{
     ViewData["Title"] = "Register";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -21,6 +23,7 @@
                 <br>
                 <div class="col-lg-9">
                     @Html.TextBoxFor(m => m.FirstName, new { placeholder = "First Name", @class = "form-control" })
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
             </div>
 
@@ -29,6 +32,7 @@
                 <br>
                 <div class="col-lg-9">
                     @Html.TextBoxFor(m => m.LastName, new { placeholder = "Last Name", @class = "form-control" })
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
 
@@ -37,6 +41,7 @@
                 <br>
                 <div class="col-lg-9">
                     @Html.TextBoxFor(m => m.Contact, new { placeholder = "Contact phone", @class = "form-control" })
+                    <span asp-validation-for="Contact" class="text-danger"></span>
                 </div>
             </div>
 
@@ -45,6 +50,8 @@
                 <br>
                 <div class="col-lg-9">
                     @Html.TextBoxFor(m => m.Address, new { placeholder = "Address", @class = "form-control" })
+                    <span asp-validation-for="Address" class="text-danger"></span>
+
                 </div>
             </div>
 
@@ -53,7 +60,7 @@
                 <br>
                 <div class="col-lg-9">
                     @Html.TextBoxFor(m => m.Email, new { placeholder = "Email", @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Email)
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
             </div>
 
@@ -63,7 +70,7 @@
                 <br>
                 <div class="col-lg-9">
                     @Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Password)
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
             </div>
 
@@ -72,16 +79,24 @@
                 <br>
                 <div class="col-lg-9">
                     @Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Confirm Password", @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.ConfirmPassword)
-                </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-12 btn-submit">
-                    <button type="submit" class="btn btn-success">Sign Up</button>
-
-                </div>
+                <article>
+                    <script src="https://checkout.stripe.com/checkout.js"
+                            class="stripe-button"
+                            data-key="@Stripe.Value.PublishableKey"
+                            data-locale="auto"
+                            data-description="Listing Application Payment"
+                            data-amount="500"
+                            data-label="Pay $5">
+                    </script>
+                </article>
             </div>
-        </div>
-    </form>
+                <br />
+                <br />
+                <br />
+            </div>
+</form>
 </div>  

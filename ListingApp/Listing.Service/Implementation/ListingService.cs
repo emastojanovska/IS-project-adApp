@@ -1,4 +1,4 @@
-﻿using Listing.Domain.DomainModels;
+﻿  using Listing.Domain.DomainModels;
 using Listing.Domain.DTO;
 using Listing.Repository.Interface;
 using Listing.Service.Interface;

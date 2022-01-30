@@ -26,41 +26,7 @@ namespace Listing.Repository
         {
             base.OnModelCreating(builder);
 
-
-            /*  builder.Entity<Category>()
-                .Property(z => z.Name)
-                .IsRequired();
-
-            builder.Entity<Image>()
-                .Property(z => z.ImageData)
-                .IsRequired();
-
-            builder.Entity<Image>()
-                .Property(z => z.MimeType)
-                .IsRequired();
-
-            builder.Entity<ListingPost>()
-                .Property(z => z.Title)
-                .IsRequired();
-
-            builder.Entity<ListingPost>()
-                .Property(z => z.Price)
-                .IsRequired();  */
-
-            /*     builder.Entity<UserDetails>()
-                     .Property(z => z.Contact)
-                     .IsRequired();
-
-                 builder.Entity<UserDetails>()
-                     .Property(z => z.FirstName)
-                     .IsRequired();
-
-                 builder.Entity<UserDetails>()
-                     .Property(z => z.LastName)
-                     .IsRequired();*/
-
-            // One-to-One Relationships
-       
+            // One-to-One Relationships       
             builder.Entity<UserImage>()
                  .HasOne(z => z.Image)
                  .WithOne(z => z.Image)
