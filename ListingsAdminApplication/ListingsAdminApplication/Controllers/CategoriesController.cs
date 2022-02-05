@@ -17,7 +17,7 @@ namespace ListingsAdminApplication.Controllers
             HttpClient client = new HttpClient();
 
 
-            string URI = "https://localhost:5001/api/Admin/GetCategories";
+            string URI = "https://localhost:44306/api/Admin/GetCategories";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -37,7 +37,7 @@ namespace ListingsAdminApplication.Controllers
         public IActionResult Create([Bind("Name")] Category category)
         {
             HttpClient client = new HttpClient();
-            string URI = "https://localhost:5001/api/Admin/CreateCategory";
+            string URI = "https://localhost:44306/api/Admin/CreateCategory";
 
             var model = new Category
             {
@@ -63,7 +63,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:5001/api/Admin/GetCategory";
+            string URI = "https://localhost:44306/api/Admin/GetCategory";
 
             var model = new
             {
@@ -88,7 +88,7 @@ namespace ListingsAdminApplication.Controllers
         public IActionResult Edit(Guid id, [Bind("Name, Id")] Category category)
         {
             HttpClient client = new HttpClient();
-            string URI = "https://localhost:5001/api/Admin/EditCategory";
+            string URI = "https://localhost:44306/api/Admin/EditCategory";
 
             var model = new Category
             {
@@ -113,7 +113,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:5001/api/Admin/GetCategory";
+            string URI = "https://localhost:44306/api/Admin/GetCategory";
 
             var model = new
             {
@@ -133,7 +133,7 @@ namespace ListingsAdminApplication.Controllers
             }
 
             client = new HttpClient();
-            URI = "https://localhost:5001/api/Admin/DeleteCategory";
+            URI = "https://localhost:44306/api/Admin/DeleteCategory";
 
             model = new
             {

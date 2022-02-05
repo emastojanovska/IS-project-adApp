@@ -142,11 +142,16 @@
     </tbody>
 </table>
 
-@section scripts{
-    <script>
-        function ShowModal(id) {
-            var call = "#" + id;
-            $(call).trigger("focus");
-        };
+@section scripts {
+
+    <script type="text/javascript">
+
+        function showModal(id) {
+            debugger;
+            console.log(id);
+            document.getElementById(id).style.display = 'block';
+        }
+
     </script>
+
 }
