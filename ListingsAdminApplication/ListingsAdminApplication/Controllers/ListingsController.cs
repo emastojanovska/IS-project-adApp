@@ -69,7 +69,7 @@ namespace ListingsAdminApplication.Controllers
         }
 
         // GET: Listings/Validate/5
-        public IActionResult Validate(Guid? id, String action)
+        public IActionResult Validate(Guid? id, String actionType)
         {
             if (id == null)
             {
@@ -104,7 +104,7 @@ namespace ListingsAdminApplication.Controllers
             var validateModel = new
             {
                 Id = id,
-                Action = action 
+                Action = actionType
             };
 
             content = new StringContent(JsonConvert.SerializeObject(validateModel), Encoding.UTF8, "application/json");

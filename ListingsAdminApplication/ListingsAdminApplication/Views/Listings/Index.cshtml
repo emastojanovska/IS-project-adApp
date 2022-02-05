@@ -80,7 +80,7 @@
                     }
                     else if (item.Status == "undefined")
                     {
-                        <button type="button" class="btn btn-success" onclick="ShowModal(@item.Id)">
+                        <button type="button" class="btn btn-success" onclick="ShowModal('@item.Id')">
                             Approve
                         </button>
 
@@ -100,7 +100,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         <a asp-action="Validate" asp-route-id="@item.Id"
-                                           asp-route-action="@item.Id">Approve</a>
+                                           asp-route-actionType="approved">Approve</a>
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         <a asp-action="Validate" asp-route-id="@item.Id"
-                                           asp-route-action="@item.Id">Disapprove</a>
+                                           asp-route-actionType="disapproved">Disapprove</a>
                                     </div>
                                 </div>
                             </div>
@@ -142,16 +142,12 @@
     </tbody>
 </table>
 
-@section scripts {
-
-    <script type="text/javascript">
-
-        function showModal(id) {
-            debugger;
-            console.log(id);
-            document.getElementById(id).style.display = 'block';
-        }
-
+@section scripts{
+    <script>
+        function ShowModal(id) {
+            var call = "#" + id;
+            $(call).modal('toggle');
+        };
     </script>
 
 }
