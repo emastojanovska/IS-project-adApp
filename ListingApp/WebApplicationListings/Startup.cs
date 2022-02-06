@@ -18,6 +18,7 @@ using Listing.Repository.Interface;
 using Listing.Repository.Implementation;
 using Listing.Service.Interface;
 using Listing.Service.Implementation;
+using WebApplicationListings.Hubs;
 using Listing.Domain;
 using Stripe;
 
@@ -62,6 +63,7 @@ namespace WebApplicationListings
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IImageService, ImageService>();
 
+            services.AddSignalR();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddControllersWithViews()
@@ -74,6 +76,7 @@ namespace WebApplicationListings
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
@@ -96,6 +99,16 @@ namespace WebApplicationListings
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSignalR(route =>
+                {
+                    route.MapHub<ChatHub>("/Chat/Index");
+                });
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotificationHub>("/NotificationHub");
+            });
 
             app.UseEndpoints(endpoints =>
             {

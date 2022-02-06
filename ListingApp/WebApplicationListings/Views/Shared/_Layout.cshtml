@@ -65,6 +65,29 @@
                         <img src="~/img/Screenshot_3.png" style="height: 48px; width: 120px; margin-right: 25px" />
                     </li>
                     <li class="nav-item nav-custom">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Chat" asp-action="Index">Chat</a>
+                    </li>
+                    <li class="nav-item nav-custom">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item nav-custom">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="Index">Listings</a>
+                    </li>
+                    @*<li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Locations" asp-action="Index">Locations</a>
+        </li>*@
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item nav-custom">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Wishlists" asp-action="Index">Wishlist</a>
+                        </li>
+                    <li class="nav-item">
+                        <img src="~/img/Screenshot_3.png" style="height: 48px; width: 120px; margin-right: 25px" />
+                    </li>
+                    <li class="nav-item nav-custom">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                     <li class="nav-item nav-custom">
@@ -82,6 +105,11 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Wishlists" asp-action="Index">Wishlist</a>
                         </li>
 
+                        <li class="nav-item nav-custom">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="MyPosts">My Posts</a>
+                        </li>
+                    }
+                </ul> 
                         <li class="nav-item nav-custom">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="MyPosts">My Posts</a>
                         </li>
@@ -132,11 +160,11 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+  @*  <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - WebApplicationListings - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </footer>*@
     <script src="~/scripts/script.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -19,6 +19,8 @@ namespace Listing.Repository
         public virtual DbSet<ListingPost> Listings { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
+
 
         public virtual DbSet<ListingsInWishlist> ListingsInWishlist { get; set; }
 
@@ -58,6 +60,11 @@ namespace Listing.Repository
                 .HasOne<Location>(z => z.Location)
                 .WithMany(z => z.ListingPosts)
                 .HasForeignKey(z => z.LocationId);
+
+            builder.Entity<Message>()
+                .HasOne<UserDetails>(z => z.User)
+                .WithMany(z => z.UserMessages)
+                .HasForeignKey(z => z.UserId);
 
             // Many-to-Many Relationship
             builder.Entity<ListingsInWishlist>()
