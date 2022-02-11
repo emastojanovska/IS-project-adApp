@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using ListingsAdminApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -12,11 +14,13 @@ namespace ListingsAdminApplication.Controllers
 {
     public class ListingsController : Controller
     {
+        string prefixURL = "https://localhost:5001/api/AdminListings";
+
         public IActionResult Index()
         {
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListings";
+            string URI = prefixURL + "/GetListings";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -29,7 +33,31 @@ namespace ListingsAdminApplication.Controllers
         {
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetInactiveListings";
+            string URI = prefixURL + "/GetInactiveListings";
+
+            HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
+
+            var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+
+            return View(result);
+        }
+        public IActionResult Approved()
+        {
+            HttpClient client = new HttpClient();
+
+            string URI = prefixURL + "/GetApprovedListings";
+
+            HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
+
+            var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+
+            return View(result);
+        }
+        public IActionResult Disapproved()
+        {
+            HttpClient client = new HttpClient();
+
+            string URI = prefixURL + "/GetDisapprovedListings";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -38,7 +66,6 @@ namespace ListingsAdminApplication.Controllers
             return View(result);
         }
 
-        // GET: Listings/Details/5
         public IActionResult Details(Guid? id)
         {
             if (id == null)
@@ -48,7 +75,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListingPostDetails";
+            string URI = prefixURL + "/GetListingPostDetails";
 
             var model = new
             {
@@ -78,7 +105,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/AdminListings/GetListing";
+            string URI = prefixURL + "/GetListing";
 
             var model = new
             {
@@ -99,7 +126,7 @@ namespace ListingsAdminApplication.Controllers
 
 
             client = new HttpClient();
-            URI = "https://localhost:44306/api/AdminListings/ApproveListing";
+            URI = prefixURL+"/ApproveListing";
 
             var validateModel = new
             {
@@ -114,7 +141,69 @@ namespace ListingsAdminApplication.Controllers
             return RedirectToAction("Index");
         }
 
-       
+        [HttpPost]
+        public FileContentResult ExportListings(DateTime dateExport)
+        {
+            string fileName = "Listings.xlsx";
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            using (var workbook = new XLWorkbook())
+            {
+                IXLWorksheet worksheet = workbook.Worksheets.Add("All Listings");
+
+                worksheet.Cell(1, 1).Value = "Id";
+                worksheet.Cell(1, 2).Value = "Title";
+                worksheet.Cell(1, 3).Value = "Description";
+                worksheet.Cell(1, 4).Value = "Price";
+                worksheet.Cell(1, 5).Value = "Date created";
+
+                var col1 = worksheet.Column("E");
+                col1.Width = 20;
+
+                worksheet.Cell(1, 6).Value = "Category";
+                worksheet.Cell(1, 7).Value = "Location";
+                worksheet.Cell(1, 8).Value = "Status";
+
+                HttpClient client = new HttpClient();
+
+                string URI = prefixURL + "/GetAllByDate";
+                var model = new
+                {
+                    Date = dateExport
+                };
+
+                HttpContent parametars = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+
+                HttpResponseMessage responseMessage = client.PostAsync(URI, parametars).Result;
+
+                var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+
+                for (int i = 1; i <= result.Count(); i++)
+                {
+                    var item = result[i - 1];
+
+                    worksheet.Cell(i + 1, 1).Value = item.Id.ToString();
+                    worksheet.Cell(i + 1, 2).Value = item.Title;
+                    worksheet.Cell(i + 1, 3).Value = item.Description;
+                    worksheet.Cell(i + 1, 4).Value = item.Price.ToString();
+                    worksheet.Cell(i + 1, 5).Value = item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss");
+                    worksheet.Cell(i + 1, 6).Value = item.Category.Name;
+                    worksheet.Cell(i + 1, 7).Value = item.Location.City;
+                    worksheet.Cell(i + 1, 8).Value = item.Status;
+
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+
+                    return File(content, contentType, fileName);
+                }
+
+            }
+        }
+
 
     }
 }

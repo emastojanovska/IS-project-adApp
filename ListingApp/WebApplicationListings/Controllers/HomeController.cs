@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using Listing.Domain;
+using Listing.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

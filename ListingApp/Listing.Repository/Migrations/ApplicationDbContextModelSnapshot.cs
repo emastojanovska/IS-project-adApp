@@ -150,6 +150,33 @@ namespace Listing.Repository.Migrations
                     b.ToTable("Locations");
                 });
 
+            modelBuilder.Entity("Listing.Domain.DomainModels.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Listing.Domain.DomainModels.Wishlist", b =>
                 {
                     b.Property<Guid>("Id")
@@ -437,6 +464,13 @@ namespace Listing.Repository.Migrations
                         .HasForeignKey("WishlistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Listing.Domain.DomainModels.Message", b =>
+                {
+                    b.HasOne("Listing.Domain.Identity.UserDetails", "User")
+                        .WithMany("UserMessages")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Listing.Domain.DomainModels.Wishlist", b =>

@@ -34,7 +34,7 @@ namespace WebApplicationListings.Controllers
             imageService = _imageService;
         }
         [Authorize]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userDetails = userService.Get(userId);

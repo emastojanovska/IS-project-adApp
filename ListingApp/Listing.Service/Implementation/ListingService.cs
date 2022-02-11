@@ -108,9 +108,13 @@ namespace Listing.Service.Implementation
             return this._listingRepository.GetAll().ToList();
         }
 
-        public List<ListingPost> GetAllActiveListings()
+        public List<ListingPost> GetAllApprovedListings()
         {
-            return this._listingRepository.GetAllActive().ToList();
+            return this._listingRepository.GetAllApproved().ToList();
+        }
+        public List<ListingPost> GetAllDisapprovedListings()
+        {
+            return this._listingRepository.GetAllDisapproved().ToList();
         }
 
         public List<ListingPost> GetAllInactiveListings()
@@ -155,16 +159,31 @@ namespace Listing.Service.Implementation
             this._listingRepository.Update(listing);
         }
 
-
         public void ValidateListing(Guid? id, string action)
         {
-            this._listingRepository.Validate(id, action);
+            ListingPost listing = GetDetailsForListing(id);
+            listing.Status = action;
+            this._listingRepository.Update(listing);
         }
 
         public List<ListingPost> GetAllListingsForUser(string id)
         {
             return GetAllListings().Where(z => z.UserId == id).ToList();
-            /*.Where(z => z.UserId == id).*/
+        }
+
+        public List<ListingPost> GetAllByDate(DateTime date)
+        {
+            if(date.Year==1)
+            {
+                return this._listingRepository.GetAllApproved().ToList();
+            }
+            return this._listingRepository.GetAllByDate(date).ToList();
+        }
+
+        public List<ListingPost> GetAllByTitleOrDescription(string search)
+        {
+            if (search == null) search = "";
+            return this._listingRepository.GetAllByTitleOrDescription(search).ToList();
         }
     }
 }
