@@ -48,7 +48,7 @@ namespace WebApplicationListings.Controllers
             locations.Add(new Location(" ", "All"));
             ViewBag.Locations = new SelectList(locations, "City", "City");
 
-            var listings = _listingService.GetAllActiveListings();
+            var listings = _listingService.GetAllApprovedListings();
 
             ListingsWithFilter listingsWithFilter = new ListingsWithFilter(listings, "All", "All", 1000);
             return View(listingsWithFilter);
@@ -78,6 +78,13 @@ namespace WebApplicationListings.Controllers
             var listings = _listingService.GetAllListingsForUser(userId);
             return View(listings);
         }
+        public IActionResult SearchResult(String search)
+        {
+            ViewBag.searchValue = search;
+            var listings = _listingService.GetAllByTitleOrDescription(search);
+            return View(listings);
+        }
+
         // GET: Listings/Details/5
         public IActionResult Details(Guid? id)
         {
