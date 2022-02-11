@@ -20,12 +20,19 @@ namespace Listing.Repository.Implementation
         }
         public IEnumerable<ListingPost> GetAll()
         {
-            return entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
+            return entities.Include(z => z.Category)
+                .Include(z => z.Location)
+                .Include(z => z.ListingImages)
+                .Include(z => z.Comments).AsEnumerable();
         }
 
         public ListingPost Get(Guid? id)
         {
-            return entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).SingleOrDefault(s => s.Id == id);
+            return entities.Include(z => z.Category)
+                .Include(z => z.Location)
+                .Include(z => z.ListingImages)
+                .Include(z => z.Comments)
+                .SingleOrDefault(s => s.Id == id);
 
         }
         public void Insert(ListingPost entity)
@@ -72,14 +79,14 @@ namespace Listing.Repository.Implementation
 
         public IEnumerable<ListingPost> GetAllActive()
         {
-            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
+            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).Include(z => z.Comments).AsEnumerable();
 
             return all.Where(z => z.Status == "approved").AsEnumerable();
         }
 
         public IEnumerable<ListingPost> GetAllInactive()
         {
-            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
+            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).Include(z => z.Comments).AsEnumerable();
 
             return all.Where(z => z.Status == "undefined").AsEnumerable();
         }

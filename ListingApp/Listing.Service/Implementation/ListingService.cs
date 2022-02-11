@@ -166,5 +166,15 @@ namespace Listing.Service.Implementation
             return GetAllListings().Where(z => z.UserId == id).ToList();
             /*.Where(z => z.UserId == id).*/
         }
+
+        public void AddCommentToListing(ListingPost listingPost, string userId, string text)
+        {
+            Comment comment = new Comment();
+            comment.Text = text;
+            comment.DateCreated = DateTime.Now;
+            comment.UserId = userId;
+            listingPost.Comments.Add(comment);
+            UpdeteExistingListing(listingPost);
+        }
     }
 }

@@ -87,13 +87,18 @@ namespace WebApplicationListings.Controllers
             }
 
             var listing = _listingService.GetDetailsForListing(id);
+            AddCommentToListingPost model = new AddCommentToListingPost
+            {
+                SelectedListing = listing,
+                ListingId = listing.Id
+            };
 
             if (listing == null)
             {
                 return NotFound();
             }
 
-            return View(listing);
+            return View(model);
         }
         [Authorize]
         // GET: Listings/Create
@@ -125,6 +130,18 @@ namespace WebApplicationListings.Controllers
             }
 
             return View(listing);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddCommentToListing(Guid id, [Bind("Comment")] AddCommentToListingPost model)
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ListingPost listing = _listingService.GetDetailsForListing(id);
+            _listingService.AddCommentToListing(listing, userId, model.Comment);
+
+            return RedirectToAction("Details", "Listings", new { id });
         }
 
         [Authorize]

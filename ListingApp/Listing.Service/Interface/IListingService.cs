@@ -23,5 +23,7 @@ namespace Listing.Service.Interface
         List<ListingPost> GetAllInactiveListings();
         List<ListingPost> GetAllListingsForUser(string id);
         void UpdeteExistingListing(ListingPost listing);
+
+        void AddCommentToListing(ListingPost listingPost, string userId, string text);
     }
 }
