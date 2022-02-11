@@ -34,8 +34,10 @@ namespace WebApplicationListings.Controllers
             return View(messages);
         }
 
+        // 1
         public async Task<IActionResult> Create(Message message)
         {
+        
             if (ModelState.IsValid)
             {
                 message.UserName = User.Identity.Name;
@@ -44,7 +46,7 @@ namespace WebApplicationListings.Controllers
                 message.DateCreated = DateTime.Now;
                 await _context.Messages.AddAsync(message);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return Ok();
             }
             return Error();
         }

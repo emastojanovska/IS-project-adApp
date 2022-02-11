@@ -26,39 +26,51 @@ function clearInputField() {
     messagesQueue.push(textInput.value);
     textInput.value = "";
 }
-
+// 2
 function sendMessage() {
     let text = messagesQueue.shift() || "";
     if (text.trim() === "") return;
     
     let when = new Date();
-    let message = new Message(username, text);
+    let message = new Message(username, text, when);
     sendMessageToHub(message);
 }
 
+// 5
 function addMessageToChat(message) {
     let isCurrentUserMessage = message.userName === username;
 
+    let rowDiv = document.createElement('div');
+    rowDiv.className = "row";
+
+    let offsetDiv = document.createElement('div');
+    offsetDiv.className = isCurrentUserMessage ? "col-md-6 offset-md-6" : "";
+   
     let container = document.createElement('div');
-    container.className = isCurrentUserMessage ? "container darker" : "container";
+    container.className = isCurrentUserMessage ? "container darker bg-primary" : "container bg-light";
 
     let sender = document.createElement('p');
-    sender.className = "sender";
     sender.innerHTML = message.userName;
+    sender.className = isCurrentUserMessage ? "sender text-right text-white" : "sender text-left"
+
     let text = document.createElement('p');
     text.innerHTML = message.text;
+    text.className = isCurrentUserMessage ? "text-right text-white": "text-left"
 
     let when = document.createElement('span');
-    when.className = isCurrentUserMessage ? "time-left" : "time-right";
+    when.className = isCurrentUserMessage ? "time-right text-light" : "time-left";
     var currentdate = new Date();
     when.innerHTML = 
         (currentdate.getMonth() + 1) + "/"
         + currentdate.getDate() + "/"
-        + currentdate.getFullYear() + " "
-        + currentdate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+    + currentdate.getFullYear() + " "
+    + currentdate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
 
     container.appendChild(sender);
     container.appendChild(text);
     container.appendChild(when);
-    chat.appendChild(container);
+
+    offsetDiv.appendChild(container);
+    rowDiv.appendChild(offsetDiv);
+    chat.appendChild(rowDiv);
 }

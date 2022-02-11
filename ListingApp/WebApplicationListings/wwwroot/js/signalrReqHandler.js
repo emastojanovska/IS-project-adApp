@@ -9,6 +9,7 @@ connection.start()
         console.error(error.message);
     });
 
+// 3
 function sendMessageToHub(message) {
     connection.invoke('sendMessage', message);
 }
