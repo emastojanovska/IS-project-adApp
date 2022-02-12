@@ -192,6 +192,8 @@ namespace Listing.Service.Implementation
             comment.Text = text;
             comment.DateCreated = DateTime.Now;
             comment.UserId = userId;
+            var user = _userRepository.Get(userId);
+            comment.UserName = user.FirstName + " " + user.LastName;
             listingPost.Comments.Add(comment);
             UpdeteExistingListing(listingPost);
         }

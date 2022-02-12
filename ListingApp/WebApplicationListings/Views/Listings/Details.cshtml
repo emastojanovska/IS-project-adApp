@@ -1,4 +1,6 @@
 ﻿@model Listing.Domain.DTO.AddCommentToListingPost
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Listing.Domain.Identity.UserDetails> SignInManager
 
 @{
     ViewData["Title"] = "Details";
@@ -77,31 +79,36 @@
 </div>
 <div>
     <h3>COMMENTS SECTION</h3>
-    <ul>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form asp-action="AddCommentToListing" asp-route-id="@Model.ListingId">
+            <div class="input-group mb-3">
+                <input type="text" asp-for="Comment" class="form-control" placeholder="Leave a comment" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button type="submit" class=" btn btn-primary" id="basic-addon2">COMMENT</button>
+                </div>
+            </div>
+            <input type="hidden" asp-for="ListingId" />
+        </form>
+    }
+
+    <ul class="list-group">
         @for (int i = 0; i < Model.SelectedListing.Comments.Count; i++)
         {
             var item = Model.SelectedListing.Comments.ElementAt(i);
-            <li><p>@item.Text</p></li>
-            
+            <li class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">@item.UserName</h5>
+                </div>
+                <p class="mb-1">@item.Text</p>
+                <small class="text-muted">@item.DateCreated</small>
+
+
+            </li>
+
         }
     </ul>
- 
-<form asp-action="AddCommentToListing" asp-route-id="@Model.ListingId">
-    <div class="form-group">
-        @if (@Model.SelectedListing.Comments.Count != 0)
-        {
-            <p>@Model.SelectedListing.Comments.ElementAt(0).DateCreated</p>
-            <h2>@Model.SelectedListing.Comments.ElementAt(0).Text</h2>
-        }
 
-        <label asp-for="Comment" class="control-label"></label>
-        <input asp-for="Comment" class="form-control" />
-        <span asp-validation-for="Comment" class="text-danger"></span>
-    </div>
-    <input type="hidden" asp-for="ListingId" />
-    <div class="form-group">
-        <button type="submit" class="btn btn-info">COMMENT</button>
-    </div>
-</form>
+
 
 </div>

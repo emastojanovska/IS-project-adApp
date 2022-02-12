@@ -11,7 +11,7 @@ namespace Listing.Domain.DomainModels
         public DateTime DateCreated { get; set; }
         public Guid ListingId { get; set; }
         public ListingPost Listing { get; set; }
-
+        public string UserName { get; set; }
         public Comment() { }
 
     }
