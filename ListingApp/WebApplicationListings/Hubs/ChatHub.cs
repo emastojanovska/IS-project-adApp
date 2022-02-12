@@ -9,17 +9,8 @@ namespace WebApplicationListings.Hubs
 {
     public class ChatHub : Hub
     {
-     /*   public async Task SendMessage(Message message) =>
-            await Clients.All.SendAsync("recieveMessage", message);*/
-
-        public Task SendPrivateMessage(string user, string message)
-        {
-            return Clients.User(user).SendAsync("receiveMessage", message);
-        }
-
-        public async Task SendMessage(string user, string message)
-        {
-            await Clients.All.SendAsync("RecieveMessage", user, message);
-        }
+        // 4
+        public async Task SendMessage(Message message) =>
+            await Clients.All.SendAsync("receiveMessage", message);
     }
 }

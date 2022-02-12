@@ -40,5 +40,6 @@ namespace Listing.Service.Implementation
         {
             this._locationRepository.Update(l);
         }
+  
     }
 }

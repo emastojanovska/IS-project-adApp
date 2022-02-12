@@ -105,11 +105,6 @@ namespace WebApplicationListings
                     route.MapHub<ChatHub>("/Chat/Index");
                 });
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<NotificationHub>("/NotificationHub");
-            });
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

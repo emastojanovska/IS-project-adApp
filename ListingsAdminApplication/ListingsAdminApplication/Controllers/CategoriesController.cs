@@ -12,12 +12,13 @@ namespace ListingsAdminApplication.Controllers
 {
     public class CategoriesController : Controller
     {
+        string prefixURL = "https://localhost:5001/api/Admin";
         public IActionResult Index()
         {
             HttpClient client = new HttpClient();
 
 
-            string URI = "https://localhost:44306/api/Admin/GetCategories";
+            string URI = prefixURL+"/GetCategories";
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
@@ -37,7 +38,7 @@ namespace ListingsAdminApplication.Controllers
         public IActionResult Create([Bind("Name")] Category category)
         {
             HttpClient client = new HttpClient();
-            string URI = "https://localhost:44306/api/Admin/CreateCategory";
+            string URI = prefixURL + "/CreateCategory";
 
             var model = new Category
             {
@@ -63,7 +64,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/Admin/GetCategory";
+            string URI = prefixURL + "/GetCategory";
 
             var model = new
             {
@@ -88,7 +89,7 @@ namespace ListingsAdminApplication.Controllers
         public IActionResult Edit(Guid id, [Bind("Name, Id")] Category category)
         {
             HttpClient client = new HttpClient();
-            string URI = "https://localhost:44306/api/Admin/EditCategory";
+            string URI = prefixURL+ "/EditCategory";
 
             var model = new Category
             {
@@ -113,7 +114,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpClient client = new HttpClient();
 
-            string URI = "https://localhost:44306/api/Admin/GetCategory";
+            string URI = prefixURL + "/GetCategory";
 
             var model = new
             {
@@ -133,7 +134,7 @@ namespace ListingsAdminApplication.Controllers
             }
 
             client = new HttpClient();
-            URI = "https://localhost:44306/api/Admin/DeleteCategory";
+            URI = prefixURL +"/DeleteCategory";
 
             model = new
             {

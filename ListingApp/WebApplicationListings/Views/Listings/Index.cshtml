@@ -25,11 +25,18 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
+                <label class="control-label">Maximum price</label>
                 <div>
                     <div class="slidecontainer">
-                        <input type="range" min="0" max="20000" class="slider" step="100" id="myRange" value="@Model.Price" oninput="amount.value=myRange.value" onchange="amount.value=myRange.value">
-                        <input type="text" id="amount" asp-for="Price" value="@Model.Price" readonly oninput="myRange.value=amount.value" onchange="myRange.value=amount.value">
+                        <div class="row">
+                            <div class="col-md-5 d-flex justify-content-center align-items-center">
+                                <input type="range" min="0" max="20000" class="slider" step="100" id="myRange" value="@Model.Price" oninput="amount.value=myRange.value" onchange="amount.value=myRange.value">
+
+                            </div>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" id="amount" asp-for="Price" value="@Model.Price" readonly oninput="myRange.value=amount.value" onchange="myRange.value=amount.value">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

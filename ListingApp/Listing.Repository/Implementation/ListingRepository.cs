@@ -11,7 +11,6 @@ namespace Listing.Repository.Implementation
     {
         private readonly ApplicationDbContext context;
         private DbSet<ListingPost> entities;
-        string errorMessage = string.Empty;
 
         public ListingRepository(ApplicationDbContext context)
         {
@@ -73,15 +72,33 @@ namespace Listing.Repository.Implementation
                 .Where(x => x.Category.Name.Contains(category))
                 .Where(x => x.Price <= price)
                 .Include(x => x.ListingImages)
-                .Include(z => z.Category).Include(z => z.Location)
+                .Include(z => z.Category)
+                .Include(z => z.Location)
                 .AsEnumerable();
         }
 
-        public IEnumerable<ListingPost> GetAllActive()
+        public IEnumerable<ListingPost> GetAllByDate(DateTime date)
+        {
+            DateTime dateSubstracted = date.AddDays(-7);
+            return entities
+                .Where(x => x.Status == "approved")
+                .Where(x => x.DateCreated >= dateSubstracted)
+                .Include(x => x.ListingImages)
+                .Include(z => z.Category)
+                .Include(z => z.Location)
+                .AsEnumerable();
+        }
+        public IEnumerable<ListingPost> GetAllApproved()
         {
             IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).Include(z => z.Comments).AsEnumerable();
 
             return all.Where(z => z.Status == "approved").AsEnumerable();
+        }
+        public IEnumerable<ListingPost> GetAllDisapproved()
+        {
+            IEnumerable<ListingPost> all = entities.Include(z => z.Category).Include(z => z.Location).Include(z => z.ListingImages).AsEnumerable();
+
+            return all.Where(z => z.Status == "disapproved").AsEnumerable();
         }
 
         public IEnumerable<ListingPost> GetAllInactive()
@@ -91,13 +108,16 @@ namespace Listing.Repository.Implementation
             return all.Where(z => z.Status == "undefined").AsEnumerable();
         }
 
-        public void Validate(Guid? id, string action)
+        public IEnumerable<ListingPost> GetAllByTitleOrDescription(string search)
         {
-            ListingPost listing = Get(id);
-            listing.Status = action;
-            entities.Update(listing);
-            context.SaveChanges();
-
+            return entities
+                 .Where(x => x.Status == "approved")
+                 .Where(x => x.Title.ToLower().Contains(search.ToLower()) 
+                 || x.Description.ToLower().Contains(search.ToLower()))
+                 .Include(x => x.ListingImages)
+                 .Include(z => z.Category)
+                 .Include(z => z.Location)
+                 .AsEnumerable();
         }
     }
 }

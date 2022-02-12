@@ -35,9 +35,14 @@ namespace WebApplicationListings.Controllers.ApiControllers
         }
 
         [HttpGet("[action]")]
-        public List<ListingPost> GetActiveListings()
+        public List<ListingPost> GetApprovedListings()
         {
-            return this._listingService.GetAllActiveListings();
+            return this._listingService.GetAllApprovedListings();
+        }
+        [HttpGet("[action]")]
+        public List<ListingPost> GetDisapprovedListings()
+        {
+            return this._listingService.GetAllDisapprovedListings();
         }
 
         [HttpPost("[action]")]
@@ -45,7 +50,12 @@ namespace WebApplicationListings.Controllers.ApiControllers
         {
             return this._listingService.GetDetailsForListing(model.Id);
         }
-
+        [HttpPost("[action]")]
+        public List<ListingPost> GetAllByDate(DateEntity model)
+        {
+            return this._listingService.GetAllByDate(model.date);
+        }
+        
         [HttpPost("[action]")]
         public ListingPost GetListing(BaseEntity model)
         {
@@ -61,10 +71,6 @@ namespace WebApplicationListings.Controllers.ApiControllers
                 ListingPost listing = _listingService.GetDetailsForListing(model.Id);
                 string userEmail = _userService.Get(listing.UserId).Email;
                 await _emailService.SendEmailAsync(listing, model.Action, userEmail);
-                if(model.Action=="disapproved")
-                {
-                    _listingService.DeleteListing(model.Id);
-                }
                 return true;
             }
             catch (DbUpdateConcurrencyException)

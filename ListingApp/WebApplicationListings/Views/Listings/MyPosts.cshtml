@@ -66,19 +66,25 @@
                 @Html.DisplayFor(modelItem => item.Location.City)
             </td>
 
-                @if (item.Status == "undefined")
-                {
-                    <td>
-                     <b style="color:red" class="text-uppercase">Waiting for validation</b>
-                    </td>
-                }
-                @if (item.Status == "approved")
-                {
-                    <td>
-                        <b style="color:red" class="text-uppercase">Approved</b>
-                    </td>
-                }
+            @if (item.Status == "undefined")
+            {
                 <td>
+                    <b style="color:red" class="text-uppercase">Waiting for validation</b>
+                </td>
+            }
+            else if (item.Status == "approved")
+            {
+                <td>
+                    <b style="color:red" class="text-uppercase">Approved</b>
+                </td>
+            }
+            else if (item.Status == "disapproved")
+            {
+                <td>
+                    <b style="color:red" class="text-uppercase">Disapproved</b>
+                </td>
+            }
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
