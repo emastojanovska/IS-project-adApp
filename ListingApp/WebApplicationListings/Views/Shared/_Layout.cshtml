@@ -30,8 +30,8 @@
                              style="height: 48px; width: 140px; margin-right: 25px" />
                     </li>
                     @*<li class="nav-item nav-custom">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        </li>*@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>*@
                     <li class="nav-item nav-custom">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="Index">Home</a>
                     </li>
@@ -48,7 +48,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Chat" asp-action="Index">Chat</a>
                         </li>
                     }
-                </ul> 
+                </ul>
                 <form class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto" asp-action="SearchResult" asp-controller="Listings">
                     <div class="form-group mb-0">
                         <div class="input-group input-group-alternative">
@@ -58,7 +58,7 @@
                             <input class="form-control" placeholder="Search" type="text" name="search">
                         </div>
                     </div>
-                      @*  <div class="form-group">
+                    @*  <div class="form-group">
                             <input type="submit" value="Search" class="btn btn-primary" />
                         </div>*@
                 </form>
@@ -67,11 +67,12 @@
                     <li class="nav-item-user dropdown">
                         <a class="nav-link pr-0" href="/Identity/Account/Manage" role="button" aria-haspopup="true" aria-expanded="false">
                             <div class="media align-items-center">
-                                @if (SignInManager.IsSignedIn(User)){
+                                @if (SignInManager.IsSignedIn(User))
+                                {
                                     <span class="avatar avatar-sm rounded-circle">
                                         <img id="avatar" alt="Image placeholder" src="~/img/theme/team-4-800x800.jpg">
                                     </span>
-                                }  
+                                }
                                 <div class="media-body ml-2 d-none d-lg-block">
                                     <span class="mb-0 text-sm font-weight-bold">
                                         @if (SignInManager.IsSignedIn(User))
@@ -96,12 +97,13 @@
     </div>
 
     @*<footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - WebApplicationListings - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>*@
+            <div class="container">
+                &copy; 2021 - WebApplicationListings - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>*@
     <script src="~/scripts/script.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/lightbox/lightbox-plus-jquery.min.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
@@ -121,9 +123,6 @@
     <script src="~/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" asp-append-version="true"></script>
     <!-- Argon JS -->
     <script src="~/js/argon.min.js" asp-append-version="true"></script>
-
-    <!-- Lightbox JS-->
-    <script src="~/js/lightbox/lightbox-plus-jquery.min.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

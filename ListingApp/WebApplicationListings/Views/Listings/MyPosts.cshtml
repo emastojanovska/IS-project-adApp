@@ -18,12 +18,12 @@
                             {
                                 var image = item.ListingImages.ElementAt(i);
 
-                            <a data-lightbox="@item.Id" href="@image.ImageSrc" style="width: inherit">
-                                @if (i == 0)
-                                {
-                                    <img src="@image.ImageSrc" style="border-radius: 7px 7px 0 0; width: inherit " height="250" />
-                                }
-                            </a>
+                                <a data-lightbox="@item.Id" href="@image.ImageSrc" style="width: inherit">
+                                    @if (i == 0)
+                                    {
+                                        <img src="@image.ImageSrc" style="border-radius: 7px 7px 0 0; width: inherit " height="250" />
+                                    }
+                                </a>
                             }
                         </div>
                     </div>
@@ -61,12 +61,12 @@
                             <div class="col-12 mt-3">
                                 <a class="btn btn-warning mr-2" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                                 <a class="btn btn-info mr-2" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+                                <button type="button" class="btn btn-danger" onclick="ShowModal('@item.Id')">
                                     Delete
                                 </button>
 
                                 <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -76,14 +76,14 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                Are you sure you want to delete this listing post??
+                                                Are you sure you want to delete this post?
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                 <form asp-action="Delete">
                                                     <input type="hidden" asp-for="@item.Id" name="id" />
                                                     <input type="submit" value="Delete" class="btn btn-danger" />
                                                 </form>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
@@ -98,3 +98,13 @@
     </div>
 
 </div>
+
+@section scripts{
+    <script>
+        function ShowModal(id) {
+            var call = "#" + id;
+            $(call).modal('toggle');
+        };
+    </script>
+
+}
