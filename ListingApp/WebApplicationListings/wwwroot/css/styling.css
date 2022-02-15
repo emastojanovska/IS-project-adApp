@@ -1,4 +1,8 @@
-﻿.nav-custom {
+﻿body {
+    background-color: #bce1ea !important;
+}
+
+.nav-custom {
     font-size: 14pt;
     border-bottom: 2px solid #2D3F5E;
     border-radius: 0 0 0 10px;

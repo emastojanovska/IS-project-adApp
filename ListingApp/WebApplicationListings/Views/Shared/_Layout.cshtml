@@ -18,6 +18,7 @@
     <!-- Argon CSS -->
     <link type="text/css" href="~/css/argon.css?v=1.2.0" rel="stylesheet" asp-append-version="true">
     <link type="text/css" href="~/css/styling.css" rel="stylesheet" asp-append-version="true">
+    <link type="text/css" href="~/css/lightbox.css" rel="stylesheet" asp-append-version="true">
 </head>
 <body>
     <header>
@@ -28,23 +29,23 @@
                         <img src="https://uploads-eu-west-1.insided.com/inspired-en/attachment/797fa735-fa6e-427b-9796-9c93b9965698_thumb.png"
                              style="height: 48px; width: 140px; margin-right: 25px" />
                     </li>
+                    @*<li class="nav-item nav-custom">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        </li>*@
                     <li class="nav-item nav-custom">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item nav-custom">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="Index">Listings</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="Index">Home</a>
                     </li>
 
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="nav-item nav-custom">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Chat" asp-action="Index">Chat</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="MyPosts">My Posts</a>
                         </li>
                         <li class="nav-item nav-custom">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Wishlists" asp-action="Index">Wishlist</a>
                         </li>
                         <li class="nav-item nav-custom">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="MyPosts">My Posts</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Chat" asp-action="Index">Chat</a>
                         </li>
                     }
                 </ul> 
@@ -120,6 +121,9 @@
     <script src="~/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" asp-append-version="true"></script>
     <!-- Argon JS -->
     <script src="~/js/argon.min.js" asp-append-version="true"></script>
+
+    <!-- Lightbox JS-->
+    <script src="~/js/lightbox/lightbox-plus-jquery.min.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
