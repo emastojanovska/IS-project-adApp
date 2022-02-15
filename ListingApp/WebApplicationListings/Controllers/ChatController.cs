@@ -9,9 +9,11 @@ using Listing.Domain.Identity;
 using Listing.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplicationListings.Controllers
 {
+    [Authorize]
     public class ChatController : Controller
     {
         public readonly UserManager<UserDetails> _userManager;

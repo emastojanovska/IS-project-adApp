@@ -4,6 +4,14 @@
     ViewData["Title"] = "Listings";
 }
 
+<div class="row">
+    <div class="col-md-6">
+        <h3 style="margin-bottom: 30px;">Pending posts</h3>
+    </div>
+    <div class="col-md-6 d-flex justify-content-end">
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
 
 <table class="table">
     <thead>
@@ -12,19 +20,16 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Discount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
+                Created
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateUpdated)
+                Updated
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category)
@@ -42,9 +47,6 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
@@ -65,17 +67,17 @@
                     @Html.DisplayFor(modelItem => item.Location.City)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">Details</a>
                 </td>
                 <td>
                     @if (item.Status == "undefined")
                     {
-                        <button type="button" class="btn btn-success mb-2" style="background: #29ab87 !important" onclick="ShowModal('@item.Id')">
+                        <button type="button" class="btn btn-success mb-2" style="background: #29ab87 !important" onclick="ShowModal('@item.Id@item.Id')">
                             Approve
                         </button>
 
                         <!-- Modal -->
-                        <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="@item.Id@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -87,26 +89,16 @@
                                     <div class="modal-body">
                                         Are you sure you want to approve this post?
                                     </div>
-                                  @*  <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <form asp-action="Validate">
-                                            <input type="hidden" name="action" value="approved" />
-                                            <input type="hidden" asp-for="@item.Id" name="id" />
-                                            <input type="submit" value="Approve" class="btn btn-danger" />
-                                        </form>
-                                    </div>*@
-
-                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <a asp-action="Validate" asp-route-id="@item.Id"
+                                    <div class="modal-footer">
+                                        <a class="btn btn-success" style="background:#29ab87" asp-action="Validate" asp-route-id="@item.Id"
                                            asp-route-actionType="approved">Approve</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     }
-                </td>
-                <td>
+
                     @if (item.Status == "undefined")
                     {
                         <button type="button" class="btn btn-danger mb-2" style="background: #e3242b !important" onclick="ShowModal('@item.Id')">
@@ -125,35 +117,21 @@
                                     <div class="modal-body">
                                         Are you sure you want to disapprove this post?
                                     </div>
-                                    @*   <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <form asp-action="Validate">
-                                            <input type="hidden" asp-for="@item.Id" name="id" />
-                                            <input type="hidden" name="action" value="disapproved" />
-                                            <input type="submit" value="Disapprove" class="btn btn-danger" />
-                                        </form>
-                                    </div>*@
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <a asp-action="Validate" asp-route-id="@item.Id"
+                                        <a class="btn btn-success" style="background:   #e3242b" asp-action="Validate" asp-route-id="@item.Id"
                                            asp-route-actionType="disapproved">Disapprove</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     }
-
                 </td>
             </tr>
 
         }
     </tbody>
 </table>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-
 
 @section scripts{
     <script>

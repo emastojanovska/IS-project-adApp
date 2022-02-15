@@ -21,7 +21,7 @@
                             {
                                 var image = item.Listing.ListingImages.ElementAt(i);
 
-                                <a data-lightbox="image-1" href="@image.ImageSrc" style="width: inherit">
+                                <a data-lightbox="@item.Id" href="@image.ImageSrc" style="width: inherit">
                                     @if (i == 0)
                                     {
                                         <img src="@image.ImageSrc" style="border-radius: 7px 7px 0 0; width: inherit " height="250" />
@@ -38,7 +38,7 @@
                             @item.Listing.Description
                         </p>
                         <div class="row">
-                            <div class="col-12 price">
+                            <div class="col-6 price">
                                 Price:
                                 <span id="price">
                                     @item.Listing.Price
@@ -51,6 +51,35 @@
                                     See more details
                                 </a>
                             </div>
+                            <div class="col-6 d-flex align-items-end justify-content-end">
+                                <button type="button" class="btn btn-danger" onclick="ShowModal('@item.Id')">
+                                    Delete
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this post?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form asp-action="DeleteFromWishlist">
+                                                    <input type="hidden" asp-for="@item.ListingId" name="id" />
+                                                    <input type="submit" value="Delete" class="btn btn-danger" />
+                                                </form>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -60,3 +89,13 @@
     </div>
 
 </div>
+
+@section scripts{
+    <script>
+        function ShowModal(id) {
+            var call = "#" + id;
+            $(call).modal('toggle');
+        };
+    </script>
+
+}
