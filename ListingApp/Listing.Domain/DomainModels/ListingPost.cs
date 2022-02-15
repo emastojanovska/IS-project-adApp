@@ -26,10 +26,13 @@ namespace Listing.Domain.DomainModels
         public virtual Location Location { get; set; }
         public virtual ICollection<ListingsInWishlist> ListingsInWishlists { get; set; }
         public virtual List<ListingImage> ListingImages { get; set; }
+        public virtual List<Comment> Comments { get; set; }
+
 
         public ListingPost()
         {
             this.ListingImages = new List<ListingImage>();
+            this.Comments = new List<Comment>();
         }
 
     }

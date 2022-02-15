@@ -20,6 +20,7 @@ namespace Listing.Repository
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
 
 
         public virtual DbSet<ListingsInWishlist> ListingsInWishlist { get; set; }
@@ -49,6 +50,11 @@ namespace Listing.Repository
             builder.Entity<ListingImage>()
                 .HasOne<ListingPost>(z => z.Listing)
                 .WithMany(z => z.ListingImages)
+                .HasForeignKey(z => z.ListingId);
+
+            builder.Entity<Comment>()
+                .HasOne<ListingPost>(z => z.Listing)
+                .WithMany(z => z.Comments)
                 .HasForeignKey(z => z.ListingId);
 
             builder.Entity<ListingPost>()

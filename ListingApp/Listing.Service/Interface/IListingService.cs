@@ -25,5 +25,7 @@ namespace Listing.Service.Interface
         void UpdeteExistingListing(ListingPost listing);
         List <ListingPost> GetAllByDate(DateTime date);
         List<ListingPost> GetAllByTitleOrDescription(string search);
+
+        void AddCommentToListing(ListingPost listingPost, string userId, string text);
     }
 }

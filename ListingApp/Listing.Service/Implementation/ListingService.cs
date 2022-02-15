@@ -185,5 +185,17 @@ namespace Listing.Service.Implementation
             if (search == null) search = "";
             return this._listingRepository.GetAllByTitleOrDescription(search).ToList();
         }
+
+        public void AddCommentToListing(ListingPost listingPost, string userId, string text)
+        {
+            Comment comment = new Comment();
+            comment.Text = text;
+            comment.DateCreated = DateTime.Now;
+            comment.UserId = userId;
+            var user = _userRepository.Get(userId);
+            comment.UserName = user.FirstName + " " + user.LastName;
+            listingPost.Comments.Add(comment);
+            UpdeteExistingListing(listingPost);
+        }
     }
 }
