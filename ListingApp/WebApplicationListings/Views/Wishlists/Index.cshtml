@@ -21,7 +21,7 @@
                             {
                                 var image = item.Listing.ListingImages.ElementAt(i);
 
-                                <a data-lightbox="image-1" href="@image.ImageSrc" style="width: inherit">
+                                <a data-lightbox="@item.Id" href="@image.ImageSrc" style="width: inherit">
                                     @if (i == 0)
                                     {
                                         <img src="@image.ImageSrc" style="border-radius: 7px 7px 0 0; width: inherit " height="250" />

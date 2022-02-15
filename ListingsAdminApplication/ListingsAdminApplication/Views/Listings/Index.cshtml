@@ -83,12 +83,12 @@
                     }
                     else if (item.Status == "undefined")
                     {
-                        <button type="button" class="btn btn-success mb-2" style="background: #29ab87 !important" onclick="ShowModal('@item.Id')">
+                        <button type="button" class="btn btn-success mb-2" style="background: #29ab87 !important" onclick="ShowModal('@item.Id@item.Id')">
                             Approve
                         </button>
 
                         <!-- Modal -->
-                        <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="@item.Id@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -101,9 +101,9 @@
                                         Are you sure you want to approve this post?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <a asp-action="Validate" asp-route-id="@item.Id"
+                                        <a class="btn btn-success" style="background:#29ab87" asp-action="Validate" asp-route-id="@item.Id"
                                            asp-route-actionType="approved">Approve</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>
@@ -129,9 +129,9 @@
                                         Are you sure you want to disapprove this post?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <a asp-action="Validate" asp-route-id="@item.Id"
+                                        <a class="btn btn-success" style="background:   #e3242b" asp-action="Validate" asp-route-id="@item.Id"
                                            asp-route-actionType="disapproved">Disapprove</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>

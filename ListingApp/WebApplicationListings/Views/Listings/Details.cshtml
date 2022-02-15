@@ -81,7 +81,7 @@
                     {
                         var item = Model.SelectedListing.ListingImages.ElementAt(i);
                         <div class="col-sm-4 text-center mt-3">
-                            <a data-lightbox="image-1" href="@item.ImageSrc" style="width: inherit">
+                            <a data-lightbox="@item.Id" href="@item.ImageSrc" style="width: inherit">
                                 <img src="@item.ImageSrc" style="border: 1px solid gray; border-radius: 7px; width: inherit" height="250" />
                             </a>
                         </div>
