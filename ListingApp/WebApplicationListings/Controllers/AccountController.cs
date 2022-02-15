@@ -223,7 +223,7 @@ namespace WebApplicationListings.Controllers
             var charge = chargeService.Create(new ChargeCreateOptions
             {
                 Amount = 500,
-                Description = "Listing Application Payment",
+                Description = "Posting Application Payment",
                 Currency = "usd",
                 Customer = customer.Id
             });
