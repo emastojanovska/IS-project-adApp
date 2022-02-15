@@ -4,9 +4,14 @@
     ViewData["Title"] = "Listings";
 }
 
-
-<h1>Ads</h1>
-<a class="btn btn-dark" asp-action="Inactive">VIEW PENDING REQUESTS</a>
+<div class="row">
+    <div class="col-md-6">
+        <h1>Ads</h1>
+    </div>
+    <div class="col-md-6 text-right">
+        <a class="btn btn-dark mb-3" asp-action="Inactive">VIEW PENDING REQUESTS</a>
+    </div>
+</div>
 
 <table class="table">
     <thead>
@@ -15,19 +20,16 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Discount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
+                Created
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateUpdated)
+                Updated
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category)
@@ -49,9 +51,6 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
@@ -71,20 +70,20 @@
                 </td>
 
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a>
                 </td>
                 <td>
                     @if (item.Status == "approved")
                     {
-                        <b style="color:red" class="text-uppercase">approved</b>
+                        <b style="color:#29ab87" class="text-uppercase">approved</b>
                     }
                     else if (item.Status == "disapproved")
                     {
-                        <b style="color:red" class="text-uppercase">disapproved</b>
+                        <b style="color:#e3242b" class="text-uppercase">disapproved</b>
                     }
                     else if (item.Status == "undefined")
                     {
-                        <button type="button" class="btn btn-success" onclick="ShowModal('@item.Id')">
+                        <button type="button" class="btn btn-success mb-2" style="background: #29ab87 !important" onclick="ShowModal('@item.Id')">
                             Approve
                         </button>
 
@@ -110,12 +109,10 @@
                             </div>
                         </div>
                     }
-                </td>
-                <td>
-                  
+
                     @if (item.Status == "undefined")
                     {
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal2">
+                        <button type="button" class="btn btn-danger mb-2" style="background: #e3242b !important" data-toggle="modal" data-target="#exampleModal2">
                             Disapprove
                         </button>
                         <!-- Modal -->
@@ -140,7 +137,6 @@
                             </div>
                         </div>
                     }
-
                 </td>
             </tr>
         }

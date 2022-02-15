@@ -14,7 +14,7 @@ namespace ListingsAdminApplication.Controllers
 {
     public class ListingsController : Controller
     {
-        string prefixURL = "https://localhost:5001/api/AdminListings";
+        string prefixURL = "https://localhost:44306/api/AdminListings";
 
         public IActionResult Index()
         {

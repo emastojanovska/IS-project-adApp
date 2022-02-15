@@ -5,16 +5,18 @@
 }
 
 
-<h1>Approved listings</h1>
 
 <form asp-controller="Listings" asp-action="ExportListings">
-    <div class="row">
-        <input type="date" id="dateExport" name="dateExport"
-               min="2022-01-01" max="2023-01-01">
-    </div>
-    <div class="row">
-        <div class="form-group">
-            <input type="submit" value="Export Listings by date" class="btn btn-primary" />
+    <div class="row mb-2">
+        <div class="col-md-8">
+            <h1>Approved listings</h1>
+        </div>
+        <div class="col-md-2">
+            <input type="date" style="margin-top: 11px;" id="dateExport" name="dateExport"
+                   min="2022-01-01" max="2023-01-01">
+        </div>
+        <div class="col-md-2">
+            <input type="submit" style="margin-top: 11px !important;" value="Export Listings by date" class="btn btn-sm mt-1 btn-primary" />
         </div>
     </div>
 </form>
@@ -26,19 +28,16 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Discount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
+                Created
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateUpdated)
+                Updated
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category)
@@ -46,7 +45,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
-            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -58,9 +56,6 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
@@ -82,9 +77,8 @@
                 </td>
 
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a>
                 </td>
-
             </tr>
         }
     </tbody>

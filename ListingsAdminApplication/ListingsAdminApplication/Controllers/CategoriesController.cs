@@ -12,7 +12,7 @@ namespace ListingsAdminApplication.Controllers
 {
     public class CategoriesController : Controller
     {
-        string prefixURL = "https://localhost:5001/api/Admin";
+        string prefixURL = "https://localhost:44306/api/Admin";
         public IActionResult Index()
         {
             HttpClient client = new HttpClient();

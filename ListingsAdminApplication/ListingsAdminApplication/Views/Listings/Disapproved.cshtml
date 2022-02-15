@@ -7,14 +7,11 @@
 
 <h1>Disapproved listings</h1>
 
-<table class="table">
+<table class="table mt-2">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
@@ -23,10 +20,10 @@
                 @Html.DisplayNameFor(model => model.Discount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
+               Created
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateUpdated)
+               Updated
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category)
@@ -46,9 +43,6 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
