@@ -24,7 +24,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
-            var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+            var result = responseMessage.Content.ReadAsAsync<List<ListingNoImage>>().Result;
 
             return View(result);
         }
@@ -37,7 +37,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
-            var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+            var result = responseMessage.Content.ReadAsAsync<List<ListingNoImage>>().Result;
 
             return View(result);
         }
@@ -49,7 +49,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
-            var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+            var result = responseMessage.Content.ReadAsAsync<List<ListingNoImage>>().Result;
 
             return View(result);
         }
@@ -61,7 +61,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpResponseMessage responseMessage = client.GetAsync(URI).Result;
 
-            var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+            var result = responseMessage.Content.ReadAsAsync<List<ListingNoImage>>().Result;
 
             return View(result);
         }
@@ -116,7 +116,7 @@ namespace ListingsAdminApplication.Controllers
 
             HttpResponseMessage responseMessage = client.PostAsync(URI, content).Result;
 
-            var listing = responseMessage.Content.ReadAsAsync<ListingPost>().Result;
+            var listing = responseMessage.Content.ReadAsAsync<ListingNoImage>().Result;
 
 
             if (listing == null)
@@ -176,7 +176,7 @@ namespace ListingsAdminApplication.Controllers
 
                 HttpResponseMessage responseMessage = client.PostAsync(URI, parametars).Result;
 
-                var result = responseMessage.Content.ReadAsAsync<List<ListingPost>>().Result;
+                var result = responseMessage.Content.ReadAsAsync<List<ListingNoImage>>().Result;
 
                 for (int i = 1; i <= result.Count(); i++)
                 {
